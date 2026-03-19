@@ -11,6 +11,7 @@ const express = require("express");
 const eventRoutes = require("./routes/eventRoutes");
 const subjectRoutes = require("./routes/subjectRoutes");
 const userRoutes = require("./routes/userRoutes"); // 👈 añadimos esto
+const tutoriaRoutes = require("./routes/tutoriaRoutes");
 
 const db = require("./config/db"); // 👈 conexión MySQL
 
@@ -30,6 +31,7 @@ app.use("/subjects", subjectRoutes);
 // ruta nueva para probar MySQL
 app.use("/usuarios", userRoutes);
 
+app.use("/tutorias", tutoriaRoutes);
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
