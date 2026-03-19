@@ -1,9 +1,7 @@
-const db = require("../config/db");
+const tutoriaModel = require("../models/Tutorial");
 
 const getTutorias = (req, res) => {
-  const sql = "SELECT * FROM tutoria";
-
-  db.query(sql, (err, results) => {
+  tutoriaModel.getAllTutorias((err, results) => {
     if (err) {
       console.error(err);
       return res.status(500).json({ error: "Error al obtener tutorias" });
@@ -13,4 +11,6 @@ const getTutorias = (req, res) => {
   });
 };
 
-module.exports = { getTutorias };
+module.exports = {
+  getTutorias,
+};
