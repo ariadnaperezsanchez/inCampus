@@ -1,4 +1,8 @@
 node_modules/
+<<<<<<< HEAD
 .env
 
 
+=======
+.env
+>>>>>>> 1f6f447 (user)
