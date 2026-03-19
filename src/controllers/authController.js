@@ -1,7 +1,7 @@
 const authModel = require("../models/Auth");
 
 const login = (req, res) => {
-  const { email, password } = req.body;
+  const { email, password } = req.body || {};
 
   if (!email || !password) {
     return res.status(400).json({ error: "Email y password son obligatorios" });
@@ -23,13 +23,9 @@ const login = (req, res) => {
       return res.status(401).json({ error: "Contraseña incorrecta" });
     }
 
-    res.json({
+    return res.json({
       message: "Login correcto",
-      usuario: {
-        id: usuario.id_usuario,
-        nombre: usuario.nombre,
-        email: usuario.email
-      }
+      usuario,
     });
   });
 };
