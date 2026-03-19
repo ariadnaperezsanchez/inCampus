@@ -19,7 +19,7 @@ const login = (req, res) => {
 
     const usuario = results[0];
 
-    if (usuario.password !== password) {
+    if (usuario.password_hash !== password) {
       return res.status(401).json({ error: "Contraseña incorrecta" });
     }
 
