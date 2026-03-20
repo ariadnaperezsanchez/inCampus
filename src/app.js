@@ -17,6 +17,7 @@ app.get("/", (req, res) => {
   res.send("API inCampus funcionando");
 });
 
+
 app.use("/auth", authRoutes);
 app.use("/events", eventRoutes);
 app.use("/subjects", subjectRoutes);
