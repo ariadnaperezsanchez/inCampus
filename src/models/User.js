@@ -1,43 +1,56 @@
 const db = require("../config/db");
 
-// Obtener todos los usuarios
-const obtenerUsuarios = () => {
-  return new Promise((resolve, reject) => {
-    const sql = "SELECT * FROM usuario";
-
-    db.query(sql, (err, results) => {
-      if (err) return reject(err);
-      resolve(results);
-    });
+const obtenerUsuarios = (callback) => {
+  const sql = "SELECT * FROM usuario";
+  db.query(sql, (err, results) => {
+    if (err) return callback(err, null);
+    callback(null, results);
   });
 };
 
-// Buscar usuario por email
-const obtenerUsuarioPorEmail = (email) => {
-  return new Promise((resolve, reject) => {
-    const sql = "SELECT * FROM usuario WHERE email = ?";
-
-    db.query(sql, [email], (err, results) => {
-      if (err) return reject(err);
-      resolve(results[0]);
-    });
+const obtenerUsuarioPorEmail = (email, callback) => {
+  const sql = "SELECT * FROM usuario WHERE email = ?";
+  db.query(sql, [email], (err, results) => {
+    if (err) return callback(err, null);
+    callback(null, results[0]);
   });
 };
 
-// Crear usuario
-const crearUsuario = (email, password_hash) => {
-  return new Promise((resolve, reject) => {
-    const sql = "INSERT INTO usuario (email, password_hash) VALUES (?, ?)";
+const crearUsuario = (
+  nombre,
+  apellido1,
+  apellido2,
+  email,
+  password_hash,
+  rol,
+  activo,
+  callback
+) => {
 
-    db.query(sql, [email, password_hash], (err, result) => {
-      if (err) return reject(err);
+  console.log("CREANDO USUARIO EN USER.JS NUEVO"); //prueba
+  const sql = `
+    INSERT INTO usuario
+    (nombre, apellido1, apellido2, email, password_hash, rol, activo)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+  `;
 
-      resolve({
+  db.query(
+    sql,
+    [nombre, apellido1, apellido2, email, password_hash, rol, activo],
+    (err, result) => {
+      if (err) return callback(err, null);
+
+      callback(null, {
         id: result.insertId,
+        nombre,
+        apellido1,
+        apellido2,
         email,
+        rol,
+        activo,
       });
-    });
-  });
+    }
+  );
 };
 
 module.exports = {
