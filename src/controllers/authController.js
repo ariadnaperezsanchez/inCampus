@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const Usuario = require("../models/usuario"); // ajusta la ruta
+const Usuario = require("../models/User"); // ajusta la ruta
 
 // =======================
 // REGISTER
