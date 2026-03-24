@@ -2,8 +2,6 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const Usuario = require("../models/User");
 
-console.log("ENTRANDO EN REGISTER NUEVO");
-
 const register = async (req, res, next) => {
   try {
     const { nombre, apellido1, apellido2, email, password, rol, activo } = req.body;
@@ -11,6 +9,12 @@ const register = async (req, res, next) => {
     if (!nombre || !apellido1 || !apellido2 || !email || !password || !rol) {
       return res.status(400).json({
         message: "Faltan campos obligatorios",
+      });
+    }
+
+    if (!["ALUMNO", "PROFESOR"].includes(rol)) {
+      return res.status(400).json({
+        message: "Rol no válido",
       });
     }
 
@@ -51,6 +55,12 @@ const register = async (req, res, next) => {
 const login = (req, res, next) => {
   try {
     const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({
+        message: "Email y contraseña son obligatorios",
+      });
+    }
 
     Usuario.obtenerUsuarioPorEmail(email, async (err, usuario) => {
       if (err) return next(err);

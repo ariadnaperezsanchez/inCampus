@@ -6,7 +6,7 @@ const protect = (req, res, next) => {
 
   if (
     req.headers.authorization &&
-    req.headers.authorization.startsWith("Bearer")
+    req.headers.authorization.startsWith("Bearer ")
   ) {
     try {
       token = req.headers.authorization.split(" ")[1];
@@ -20,6 +20,10 @@ const protect = (req, res, next) => {
 
         if (!usuario) {
           return res.status(401).json({ message: "Usuario no encontrado" });
+        }
+
+        if (usuario.activo === 0) {
+          return res.status(401).json({ message: "Usuario inactivo" });
         }
 
         req.user = {
@@ -37,9 +41,9 @@ const protect = (req, res, next) => {
     } catch (error) {
       return res.status(401).json({ message: "Token inválido o expirado" });
     }
+  } else {
+    return res.status(401).json({ message: "No hay token" });
   }
-
-  return res.status(401).json({ message: "No hay token" });
 };
 
 const authorize = (...rolesPermitidos) => {

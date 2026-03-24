@@ -1,4 +1,6 @@
+require("dotenv").config();
 const express = require("express");
+
 
 const eventRoutes = require("./routes/eventRoutes");
 const subjectRoutes = require("./routes/subjectRoutes");

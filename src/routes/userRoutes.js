@@ -14,38 +14,33 @@ router.get("/perfil", protect, (req, res) => {
   });
 });
 
-// Solo admin
-router.get("/admin", protect, authorize("admin"), (req, res) => {
+// Solo profesor
+router.get("/profesor", protect, authorize("PROFESOR"), (req, res) => {
   res.json({
-    message: "Bienvenido admin",
+    message: "Bienvenido profesor",
     user: req.user,
   });
 });
 
-// Admin o profesor
+// Profesor o alumno
 router.get(
   "/gestion-profesores",
   protect,
-  authorize("admin", "profesor"),
+  authorize("PROFESOR", "ALUMNO"),
   (req, res) => {
     res.json({
-      message: "Acceso permitido a admin o profesor",
+      message: "Acceso permitido a profesor o alumno",
       user: req.user,
     });
   }
 );
 
 // Solo alumno
-router.get(
-  "/zona-alumno",
-  protect,
-  authorize("alumno"),
-  (req, res) => {
-    res.json({
-      message: "Acceso permitido solo a alumno",
-      user: req.user,
-    });
-  }
-);
+router.get("/zona-alumno", protect, authorize("ALUMNO"), (req, res) => {
+  res.json({
+    message: "Acceso permitido solo a alumno",
+    user: req.user,
+  });
+});
 
 module.exports = router;
