@@ -3,11 +3,17 @@ const tutoriaModel = require("../models/Tutorial");
 const getTutorias = (req, res) => {
   tutoriaModel.getAllTutorias((err, results) => {
     if (err) {
-      console.error(err);
-      return res.status(500).json({ error: "Error al obtener tutorias" });
+      console.error("Error al obtener tutorías:", err);
+      return res.status(500).json({
+        message: "Error al obtener tutorías",
+      });
     }
 
-    res.json(results);
+    return res.status(200).json({
+      message: "Tutorías obtenidas correctamente",
+      user: req.user,
+      data: results,
+    });
   });
 };
 

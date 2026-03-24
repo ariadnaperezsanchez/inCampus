@@ -2,10 +2,8 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const Usuario = require("../models/User");
 
-
-
-
 console.log("ENTRANDO EN REGISTER NUEVO");
+
 const register = async (req, res, next) => {
   try {
     const { nombre, apellido1, apellido2, email, password, rol, activo } = req.body;
@@ -63,6 +61,12 @@ const login = (req, res, next) => {
         });
       }
 
+      if (usuario.activo === 0) {
+        return res.status(401).json({
+          message: "Usuario inactivo",
+        });
+      }
+
       const passwordValida = await bcrypt.compare(password, usuario.password_hash);
 
       if (!passwordValida) {
@@ -75,6 +79,7 @@ const login = (req, res, next) => {
         {
           id: usuario.id_usuario,
           email: usuario.email,
+          rol: usuario.rol,
         },
         process.env.JWT_SECRET,
         { expiresIn: "1h" }
@@ -83,6 +88,15 @@ const login = (req, res, next) => {
       return res.json({
         message: "Login correcto",
         token,
+        user: {
+          id: usuario.id_usuario,
+          nombre: usuario.nombre,
+          apellido1: usuario.apellido1,
+          apellido2: usuario.apellido2,
+          email: usuario.email,
+          rol: usuario.rol,
+          activo: usuario.activo,
+        },
       });
     });
   } catch (error) {
