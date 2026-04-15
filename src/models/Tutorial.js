@@ -76,6 +76,15 @@ const reservarTutoria = (id, id_alumno, callback) => {
   db.query(sql, [id_alumno, id], callback);
 };
 
+const cancelReservation = (id, callback) => {
+  const sql = `
+    UPDATE tutoria
+    SET id_alumno = NULL, estado_slot = 'DISPONIBLE'
+    WHERE id_tutoria = ?
+  `;
+
+  db.query(sql, [id], callback);
+};
 
 module.exports = {
   getAllTutorias,
@@ -85,4 +94,5 @@ module.exports = {
   getReservationsByStudent,
   getReservadasByProfesor,
   getAvailableTutorias,
+  cancelReservation
 };
