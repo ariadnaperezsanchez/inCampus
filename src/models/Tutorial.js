@@ -76,7 +76,7 @@ const reservarTutoria = (id, id_alumno, callback) => {
   db.query(sql, [id_alumno, id], callback);
 };
 
-
+// Exportar funciones del modelo para usarlas en el controlador 
 module.exports = {
   getAllTutorias,
   createAvailability,

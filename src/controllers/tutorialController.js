@@ -104,7 +104,7 @@ const reservar = (req, res) => {
 
     const tutoria = results[0];
 
-    if (tutoria.estado_slot !== "DISPONIBLE") {
+    if (tutoria.estado_slot !== "DISPONIBLE") { //estado_slot es el estado de la tutoría, si no es disponible no se puede reservar
       return res.status(400).json({
         message: "La tutoría ya está reservada",
       });
@@ -123,7 +123,7 @@ const reservar = (req, res) => {
 };
 
 // GET solo disponibilidades
-const getAvailableTutorias = (req, res) => {
+const getAvailableTutorias = (req, res) => { //tutorias disponibles avaiable
   tutoriaModel.getAvailableTutorias((err, results) => {
     if (err) {
       console.error("Error al obtener disponibilidades:", err);
@@ -140,7 +140,7 @@ const getAvailableTutorias = (req, res) => {
 };
 
 
-
+// EXPORTAMOS LAS FUNCIONES PARA USARLAS EN LAS RUTAS 
 module.exports = {
   getTutorias,
   createAvailability,

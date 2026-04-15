@@ -1,3 +1,4 @@
+// Servidor principal de la aplicación. Configura y arranca el servidor Express.
 const app = require("./app");
 
 const PORT = 3000;

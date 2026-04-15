@@ -1,3 +1,4 @@
+// Archivo de configuración para la conexión a la base de datos MySQL
 const mysql = require("mysql2");
 
 const db = mysql.createConnection({
