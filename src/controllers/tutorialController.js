@@ -140,7 +140,48 @@ const getAvailableTutorias = (req, res) => { //tutorias disponibles avaiable
 };
 
 
+<<<<<<< HEAD
 // EXPORTAMOS LAS FUNCIONES PARA USARLAS EN LAS RUTAS 
+=======
+// ALUMNO cancela su reserva
+const cancelReservation = (req, res) => {
+  const id = req.params.id;
+  const id_alumno = req.user.id;
+
+  tutoriaModel.getTutoriaById(id, (err, results) => {
+    if (err) {
+      return res.status(500).json({ message: "Error servidor" });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: "Tutoría no encontrada" });
+    }
+
+    const tutoria = results[0];
+
+    if (tutoria.id_alumno !== id_alumno) {
+      return res.status(403).json({
+        message: "No puedes cancelar una tutoría que no es tuya",
+      });
+    }
+
+    tutoriaModel.cancelReservation(id, (err, result) => {
+      if (err) {
+        return res.status(500).json({
+          message: "Error al cancelar la tutoría",
+        });
+      }
+
+      return res.status(200).json({
+        message: "Tutoría cancelada correctamente",
+      });
+    });
+  });
+};
+
+
+
+>>>>>>> 0d9f439205cc3407ba1131c649585ec8cfe07acd
 module.exports = {
   getTutorias,
   createAvailability,
@@ -148,4 +189,5 @@ module.exports = {
   getMyReservations,
   getReservadasProfesor,
   getAvailableTutorias,
+  cancelReservation
 };

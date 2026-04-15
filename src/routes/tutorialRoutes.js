@@ -52,4 +52,13 @@ router.post(
   tutoriaController.reservar
 );
 
+// PUT para cancelar tutoria
+router.put(
+  "/:id/cancelar",
+  protect,
+  authorize("ALUMNO"),
+  tutoriaController.cancelReservation
+);
+
+
 module.exports = router;
