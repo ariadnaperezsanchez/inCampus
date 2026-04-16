@@ -76,20 +76,11 @@ const reservarTutoria = (id, id_alumno, callback) => {
   db.query(sql, [id_alumno, id], callback);
 };
 
-<<<<<<< HEAD
-// Exportar funciones del modelo para usarlas en el controlador 
-=======
-const cancelReservation = (id, callback) => {
-  const sql = `
-    UPDATE tutoria
-    SET id_alumno = NULL, estado_slot = 'DISPONIBLE'
-    WHERE id_tutoria = ?
-  `;
-
-  db.query(sql, [id], callback);
+const cancelReservation = async (reservationId) => {
+  // tu lógica aquí
 };
 
->>>>>>> 0d9f439205cc3407ba1131c649585ec8cfe07acd
+// Exportar funciones del modelo para usarlas en el controlador 
 module.exports = {
   getAllTutorias,
   createAvailability,
