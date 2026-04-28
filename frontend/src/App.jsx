@@ -34,7 +34,7 @@ function App() {
         />
 
         <Route
-          path="/tutorias"
+          path="/Tutorias"
           element={
             <PrivateRoute>
               <Tutorias />
