@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 
 const API_URL = "http://localhost:3000/api/asignaturas";
 
+
+
 export default function Asignatura() {
   const [asignaturas, setAsignaturas] = useState([]);
 
