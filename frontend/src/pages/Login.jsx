@@ -20,20 +20,16 @@ function Login() {
 
       const data = await res.json()
 
-      // ver qué devuelve el backend
-      console.log("LOGIN RESPONSE:", data)
-
-      // Si hay error del backend
       if (!res.ok) {
         setError(data.message || 'Error al iniciar sesión')
         return
       }
 
-      // Guardar datos
+      // 🔥 IMPORTANTE
       localStorage.setItem('token', data.token)
       localStorage.setItem('usuario', JSON.stringify(data.user))
+      localStorage.setItem('rol', data.user.rol)
 
-      // Redirigir
       navigate('/dashboard')
 
     } catch (err) {
@@ -69,7 +65,6 @@ function Login() {
           <button type="submit">Entrar</button>
         </form>
 
-        {/* Mostrar error */}
         {error && (
           <p style={{ color: 'red', marginTop: '10px' }}>
             {error}
