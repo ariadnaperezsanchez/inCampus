@@ -50,15 +50,6 @@ function App() {
             </PrivateRoute>
           }
         />
-
-        <Route
-        path="/mis-tutorias"
-        element={
-        <PrivateRoute>
-        <MisTutorias />
-      </PrivateRoute>
-  }
-/>
       </Routes>
     </BrowserRouter>
   )
