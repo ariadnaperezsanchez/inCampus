@@ -39,7 +39,9 @@ function Dashboard() {
         <section className="dashboard-footer">
         <h3>Sigue construyendo tu futuro en InCampus</h3>
         </section>
+        <div className="img-container">
         <img src={dashboardImg} alt="Dashboard" className="dashboard-img" />
+        </div>
       </main>
 
       <Footer />

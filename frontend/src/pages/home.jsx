@@ -50,7 +50,9 @@ function Home() {
             </ul>
           </div>
         </section>
-        <img src={home} alt="Home" className="home-img" />
+        <div className="img-container">
+        <img src={home} alt="Home" className="home-img" />      
+        </div>
         </main>
 <Footer />
 </>
