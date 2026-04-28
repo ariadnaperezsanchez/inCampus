@@ -1,30 +1,100 @@
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function Tutorias() {
+  const [tutorias, setTutorias] = useState([]);
   const [tutoriaReservada, setTutoriaReservada] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const profesores = [
-    {
-      id: 1,
-      nombre: "María López",
-      asignatura: "Matemáticas",
-      horario: "Lunes 10:00 - 11:00",
-    },
-    {
-      id: 2,
-      nombre: "Carlos García",
-      asignatura: "Historia",
-      horario: "Miércoles 12:00 - 13:00",
-    },
-    {
-      id: 3,
-      nombre: "Ana Martínez",
-      asignatura: "Lengua",
-      horario: "Viernes 09:00 - 10:00",
-    },
-  ];
+  useEffect(() => {
+    const cargarTutorias = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        const res = await fetch("http://localhost:3000/tutorias/disponibles", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          setError(data.message || "Error al cargar tutorías");
+          return;
+        }
+
+        setTutorias(data);
+      } catch (err) {
+        console.error(err);
+        setError("No se pudo conectar con el servidor");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    cargarTutorias();
+  }, []);
+
+  const reservarTutoria = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await fetch(
+        `http://localhost:3000/tutorias/${id}/reservar`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.message || "Error al reservar tutoría");
+        return;
+      }
+
+      setTutoriaReservada(id);
+      alert("Tutoría reservada correctamente");
+    } catch (err) {
+      console.error(err);
+      alert("No se pudo conectar con el servidor");
+    }
+  };
+
+  const cancelarTutoria = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await fetch(
+        `http://localhost:3000/tutorias/${id}/cancelar`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.message || "Error al cancelar tutoría");
+        return;
+      }
+
+      setTutoriaReservada(null);
+      alert("Tutoría cancelada correctamente");
+    } catch (err) {
+      console.error(err);
+      alert("No se pudo conectar con el servidor");
+    }
+  };
 
   return (
     <>
@@ -40,35 +110,50 @@ function Tutorias() {
           </p>
         </section>
 
-        <section className="tutorias-grid">
-          {profesores.map((profesor) => (
-            <article className="tutoria-card" key={profesor.id}>
-              <h2>{profesor.nombre}</h2>
-              <p>
-                <strong>Asignatura:</strong> {profesor.asignatura}
-              </p>
-              <p>
-                <strong>Horario:</strong> {profesor.horario}
-              </p>
+        {loading && <p>Cargando tutorías...</p>}
+        {error && <p style={{ color: "red" }}>{error}</p>}
 
-              {tutoriaReservada === profesor.id ? (
-                <button
-                  className="btn secondary"
-                  onClick={() => setTutoriaReservada(null)}
-                >
-                  Cancelar tutoría
-                </button>
-              ) : (
-                <button
-                  className="btn primary"
-                  onClick={() => setTutoriaReservada(profesor.id)}
-                >
-                  Reservar tutoría
-                </button>
-              )}
-            </article>
-          ))}
-        </section>
+        {!loading && !error && (
+          <section className="tutorias-grid">
+            {tutorias.length === 0 ? (
+              <p>No hay tutorías disponibles</p>
+            ) : (
+              tutorias.map((tutoria) => (
+                <article className="tutoria-card" key={tutoria.id}>
+                  <h2>{tutoria.profesor || tutoria.nombre}</h2>
+
+                  <p>
+                    <strong>Asignatura:</strong>{" "}
+                    {tutoria.asignatura || "Sin asignatura"}
+                  </p>
+
+                  <p>
+                    <strong>Horario:</strong>{" "}
+                    {tutoria.horario ||
+                      tutoria.fecha ||
+                      "Horario no disponible"}
+                  </p>
+
+                  {tutoriaReservada === tutoria.id ? (
+                    <button
+                      className="btn secondary"
+                      onClick={() => cancelarTutoria(tutoria.id)}
+                    >
+                      Cancelar tutoría
+                    </button>
+                  ) : (
+                    <button
+                      className="btn primary"
+                      onClick={() => reservarTutoria(tutoria.id)}
+                    >
+                      Reservar tutoría
+                    </button>
+                  )}
+                </article>
+              ))
+            )}
+          </section>
+        )}
       </main>
 
       <Footer />

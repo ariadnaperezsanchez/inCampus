@@ -54,7 +54,7 @@ function Dashboard() {
 
           <Link to="/Asignatura" className="dashboard-card">
             <h2>Asignaturas</h2>
-            <p>lalala.</p>
+            <p>Gestiona tus asignaturas y mantente al día.</p>
           </Link>
         </section>
 
