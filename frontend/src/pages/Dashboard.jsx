@@ -37,12 +37,12 @@ function Dashboard() {
         </section>
 
         <section className="dashboard-grid">
-          <Link to="/tutorias" className="dashboard-card">
+          <Link to="/Tutorias" className="dashboard-card">
             <h2>Tutorías</h2>
             <p>Reserva o consulta tus próximas tutorías.</p>
           </Link>
 
-          <Link to="/mis-tutorias" className="dashboard-card">
+          <Link to="/Mis-tutorias" className="dashboard-card">
             <h2>Mis tutorías</h2>
             <p>Consulta tus tutorías reservadas.</p>
           </Link>
