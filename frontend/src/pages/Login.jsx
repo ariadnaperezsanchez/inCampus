@@ -4,10 +4,12 @@ import { Link, useNavigate } from 'react-router-dom'
 function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
   const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setError('')
 
     try {
       const res = await fetch('http://localhost:3000/auth/login', {
@@ -18,14 +20,22 @@ function Login() {
 
       const data = await res.json()
 
-      // guardas usuario 
-      localStorage.setItem('usuario', JSON.stringify(data.usuario))
+      // Si hay error del backend
+      if (!res.ok) {
+        setError(data.message || 'Error al iniciar sesión')
+        return
+      }
 
-      // rediriges al dashboard
+      // Guardar datos correctamente
+      localStorage.setItem('token', data.token)
+      localStorage.setItem('usuario', JSON.stringify(data.user))
+
+      // Redirigir
       navigate('/dashboard')
 
-    } catch {
-      console.error('Error al iniciar sesión')
+    } catch (err) {
+      console.error(err)
+      setError('No se pudo conectar con el servidor')
     }
   }
 
@@ -42,6 +52,7 @@ function Login() {
             placeholder="Correo electrónico"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            required
           />
 
           <input
@@ -49,10 +60,14 @@ function Login() {
             placeholder="Contraseña"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            required
           />
 
           <button type="submit">Entrar</button>
         </form>
+
+        {/* Mostrar error */}
+        {error && <p style={{ color: 'red', marginTop: '10px' }}>{error}</p>}
 
         <Link to="/" className="back-home">
           Volver a inicio

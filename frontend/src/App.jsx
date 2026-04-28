@@ -3,10 +3,10 @@ import './App.css'
 import Home from './pages/home'
 import Login from './pages/Login'
 import Events from './pages/Events'
-import Dashboard from "./pages/Dashboard";
-import Tutorias from "./pages/Tutorias";
-import Asignatura from "./pages/Asignatura";
-
+import Dashboard from './pages/Dashboard'
+import Tutorias from './pages/Tutorias'
+import Asignatura from './pages/Asignatura'
+import PrivateRoute from './components/PrivateRoute'
 
 function App() {
   return (
@@ -14,10 +14,42 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/events" element={<Events />} />
-        <Route path="/tutorias" element={<Tutorias />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/asignatura" element={<Asignatura />} />
+
+        <Route
+          path="/dashboard"
+          element={
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/events"
+          element={
+            <PrivateRoute>
+              <Events />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/tutorias"
+          element={
+            <PrivateRoute>
+              <Tutorias />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/asignatura"
+          element={
+            <PrivateRoute>
+              <Asignatura />
+            </PrivateRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   )
