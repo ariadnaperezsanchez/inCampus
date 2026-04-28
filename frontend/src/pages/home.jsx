@@ -1,7 +1,7 @@
 import Footer from '../components/Footer'
 import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
-import home from '../assets/home.jpg' 
+
 
 function Home() {
   const navigate = useNavigate()
@@ -50,9 +50,6 @@ function Home() {
             </ul>
           </div>
         </section>
-        <div className="img-container">
-        <img src={home} alt="Home" className="home-img" />      
-        </div>
         </main>
 <Footer />
 </>
