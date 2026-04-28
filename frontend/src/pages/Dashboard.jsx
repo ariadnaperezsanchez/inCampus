@@ -37,12 +37,12 @@ function Dashboard() {
         </section>
 
         <section className="dashboard-grid">
-          <Link to="/Tutorias" className="dashboard-card">
+          <Link to="/tutorias" className="dashboard-card">
             <h2>Tutorías</h2>
             <p>Reserva o consulta tus próximas tutorías.</p>
           </Link>
 
-          <Link to="/Mis-tutorias" className="dashboard-card">
+          <Link to="/mis-tutorias" className="dashboard-card">
             <h2>Mis tutorías</h2>
             <p>Consulta tus tutorías reservadas.</p>
           </Link>
@@ -52,10 +52,19 @@ function Dashboard() {
             <p>Consulta el calendario académico e inscríbete.</p>
           </Link>
 
-          <Link to="/Asignatura" className="dashboard-card">
-            <h2>Asignaturas</h2>
-            <p>Gestiona tus asignaturas y mantente al día.</p>
-          </Link>
+          {usuario.rol === "PROFESOR" && (
+            <Link to="/asignatura" className="dashboard-card">
+              <h2>Asignaturas</h2>
+              <p>Gestiona tus asignaturas y sube documentos.</p>
+            </Link>
+          )}
+
+          {usuario.rol === "ALUMNO" && (
+            <Link to="/asignatura-alumno" className="dashboard-card">
+              <h2>Asignaturas</h2>
+              <p>Consulta los documentos subidos por tus profesores.</p>
+            </Link>
+          )}
         </section>
 
         <section className="dashboard-footer">

@@ -20,13 +20,16 @@ function Login() {
 
       const data = await res.json()
 
+      // ver qué devuelve el backend
+      console.log("LOGIN RESPONSE:", data)
+
       // Si hay error del backend
       if (!res.ok) {
         setError(data.message || 'Error al iniciar sesión')
         return
       }
 
-      // Guardar datos correctamente
+      // Guardar datos
       localStorage.setItem('token', data.token)
       localStorage.setItem('usuario', JSON.stringify(data.user))
 
@@ -67,7 +70,11 @@ function Login() {
         </form>
 
         {/* Mostrar error */}
-        {error && <p style={{ color: 'red', marginTop: '10px' }}>{error}</p>}
+        {error && (
+          <p style={{ color: 'red', marginTop: '10px' }}>
+            {error}
+          </p>
+        )}
 
         <Link to="/" className="back-home">
           Volver a inicio

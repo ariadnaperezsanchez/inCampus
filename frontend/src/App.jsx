@@ -3,10 +3,12 @@ import './App.css'
 import Home from './pages/home'
 import Login from './pages/Login'
 import Events from './pages/Events'
+import EventsAlumno from './pages/EventsAlumno'
 import Dashboard from './pages/Dashboard'
 import Tutorias from './pages/Tutorias'
 import MisTutorias from './pages/Mistutorias'
 import Asignatura from './pages/Asignatura'
+import AsignaturaAlumno from './pages/AsignaturaAlumno'
 import PrivateRoute from './components/PrivateRoute'
 
 function App() {
@@ -35,6 +37,15 @@ function App() {
         />
 
         <Route
+          path="/events-alumno"
+          element={
+            <PrivateRoute>
+              <EventsAlumno />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
           path="/Tutorias"
           element={
             <PrivateRoute>
@@ -44,12 +55,12 @@ function App() {
         />
 
         <Route
-        path="/mis-tutorias"
-        element={
-          <PrivateRoute>
-            <MisTutorias />
-          </PrivateRoute>
-        }
+          path="/mis-tutorias"
+          element={
+            <PrivateRoute>
+              <MisTutorias />
+            </PrivateRoute>
+          }
         />
 
         <Route
@@ -57,6 +68,15 @@ function App() {
           element={
             <PrivateRoute>
               <Asignatura />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/asignatura-alumno"
+          element={
+            <PrivateRoute>
+              <AsignaturaAlumno />
             </PrivateRoute>
           }
         />
