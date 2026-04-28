@@ -5,6 +5,7 @@ import Login from './pages/Login'
 import Events from './pages/Events'
 import Dashboard from './pages/Dashboard'
 import Tutorias from './pages/Tutorias'
+import MisTutorias from './pages/Mistutorias'
 import Asignatura from './pages/Asignatura'
 import PrivateRoute from './components/PrivateRoute'
 
@@ -40,6 +41,15 @@ function App() {
               <Tutorias />
             </PrivateRoute>
           }
+        />
+
+        <Route
+        path="/mis-tutorias"
+        element={
+          <PrivateRoute>
+            <MisTutorias />
+          </PrivateRoute>
+        }
         />
 
         <Route
