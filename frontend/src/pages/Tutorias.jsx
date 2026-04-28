@@ -1,4 +1,175 @@
+import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
+
+function Tutorias() {
+  const [tutorias, setTutorias] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const cargarTutorias = async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const token = localStorage.getItem("token");
+
+      const res = await fetch("http://localhost:3000/tutorias/disponibles", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.message || "Error al cargar tutorías");
+        return;
+      }
+
+      setTutorias(data.data || data);
+    } catch (err) {
+      console.error(err);
+      setError("No se pudo conectar con el servidor");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    cargarTutorias();
+  }, []);
+
+  const reservarTutoria = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await fetch(`http://localhost:3000/tutorias/${id}/reservar`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.message || "Error al reservar tutoría");
+        return;
+      }
+
+      alert("Tutoría reservada correctamente");
+      await cargarTutorias();
+    } catch (err) {
+      console.error(err);
+      alert("No se pudo conectar con el servidor");
+    }
+  };
+
+  const cancelarTutoria = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await fetch(`http://localhost:3000/tutorias/${id}/cancelar`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.message || "Error al cancelar tutoría");
+        return;
+      }
+
+      alert("Tutoría cancelada correctamente");
+      await cargarTutorias();
+    } catch (err) {
+      console.error(err);
+      alert("No se pudo conectar con el servidor");
+    }
+  };
+
+  return (
+    <>
+      <Navbar />
+
+      <main className="tutorias-page">
+        <section className="tutorias-hero">
+          <span className="badge">Tutorías académicas</span>
+          <h1>Reserva una tutoría con tus profesores</h1>
+          <p>
+            Consulta la disponibilidad de los profesores y reserva una tutoría
+            de forma rápida y sencilla.
+          </p>
+        </section>
+
+        {loading && <p>Cargando tutorías...</p>}
+        {error && <p style={{ color: "red" }}>{error}</p>}
+
+        {!loading && !error && (
+          <section className="tutorias-grid">
+            {tutorias.length === 0 ? (
+              <p>No hay tutorías disponibles</p>
+            ) : (
+              tutorias.map((tutoria) => {
+                const id = tutoria.id_tutoria || tutoria.id;
+
+                return (
+                  <article className="tutoria-card" key={id}>
+                    <h2>
+                      {tutoria.profesor ||
+                        tutoria.nombre_profesor ||
+                        tutoria.nombre}
+                    </h2>
+
+                    <p>
+                      <strong>Asignatura:</strong>{" "}
+                      {tutoria.asignatura ||
+                        tutoria.nombre_asignatura ||
+                        "Sin asignatura"}
+                    </p>
+
+                    <p>
+                      <strong>Horario:</strong>{" "}
+                      {tutoria.horario ||
+                        tutoria.fecha ||
+                        tutoria.fecha_hora ||
+                        "Horario no disponible"}
+                    </p>
+
+                    {tutoria.reservada ? (
+                      <button
+                        className="btn secondary"
+                        onClick={() => cancelarTutoria(id)}
+                      >
+                        Cancelar tutoría
+                      </button>
+                    ) : (
+                      <button
+                        className="btn primary"
+                        onClick={() => reservarTutoria(id)}
+                      >
+                        Reservar tutoría
+                      </button>
+                    )}
+                  </article>
+                );
+              })
+            )}
+          </section>
+        )}
+      </main>
+
+      <Footer />
+    </>
+  );
+}
+
+export default Tutorias;
+/*import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { useEffect, useState } from "react";
 
@@ -161,4 +332,4 @@ function Tutorias() {
   );
 }
 
-export default Tutorias;
+export default Tutorias;*/
