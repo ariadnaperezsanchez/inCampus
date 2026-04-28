@@ -86,6 +86,17 @@ const cancelReservation = (id, callback) => {
   db.query(sql, [id], callback);
 };
 
+const cancelAvailability = (id, callback) => {
+  const sql = `
+    UPDATE tutoria
+    SET estado_slot = 'CANCELADA',
+        id_alumno = NULL
+    WHERE id_tutoria = ?
+  `;
+
+  db.query(sql, [id], callback);
+};
+
 // Exportar funciones del modelo para usarlas en el controlador 
 module.exports = {
   getAllTutorias,
@@ -95,5 +106,6 @@ module.exports = {
   getReservationsByStudent,
   getReservadasByProfesor,
   getAvailableTutorias,
-  cancelReservation
+  cancelReservation,
+  cancelAvailability
 };

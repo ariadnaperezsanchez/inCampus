@@ -30,6 +30,7 @@ const getEventById = (req, res) => {
 
 const createEvent = (req, res) => {
   const { titulo, descripcion, fecha, ubicacion } = req.body;
+  const id_profesor = req.user.id; // 👈 CLAVE
 
   if (!titulo || !fecha) {
     return res.status(400).json({
@@ -37,17 +38,23 @@ const createEvent = (req, res) => {
     });
   }
 
-  eventModel.crearEvento(titulo, descripcion, fecha, ubicacion, (err, result) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ error: "Error al crear el evento" });
-    }
+  eventModel.crearEvento(
+    titulo,
+    descripcion,
+    fecha,
+    ubicacion,
+    id_profesor,
+    (err, result) => {
+      if (err) {
+        return res.status(500).json({ error: "Error al crear evento" });
+      }
 
-    res.status(201).json({
-      message: "Evento creado correctamente",
-      evento: result,
-    });
-  });
+      res.status(201).json({
+        message: "Evento creado correctamente",
+        evento: result,
+      });
+    }
+  );
 };
 
 const updateEvent = (req, res) => {

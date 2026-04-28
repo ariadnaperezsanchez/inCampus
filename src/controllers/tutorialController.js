@@ -1,6 +1,10 @@
 const tutoriaModel = require("../models/Tutorial");
 
-// GET todas las tutorías
+// ============================
+// GET - Tutorías
+// ============================
+
+// Obtener todas las tutorías
 const getTutorias = (req, res) => {
   tutoriaModel.getAllTutorias((err, results) => {
     if (err) {
@@ -18,7 +22,28 @@ const getTutorias = (req, res) => {
   });
 };
 
-// Funcion para obtener reservas propias del alumno
+// Obtener solo tutorías disponibles
+const getAvailableTutorias = (req, res) => {
+  tutoriaModel.getAvailableTutorias((err, results) => {
+    if (err) {
+      console.error("Error al obtener disponibilidades:", err);
+      return res.status(500).json({
+        message: "Error al obtener disponibilidades",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Disponibilidades obtenidas correctamente",
+      data: results,
+    });
+  });
+};
+
+// ============================
+// ALUMNO - Reservas
+// ============================
+
+// Obtener reservas propias del alumno
 const getMyReservations = (req, res) => {
   const id_alumno = req.user.id;
 
@@ -37,27 +62,91 @@ const getMyReservations = (req, res) => {
   });
 };
 
-// GET  de tutorias que le han reservado al profesor los alumnos
-const getReservadasProfesor = (req, res) => {
-  const id_profesor = req.user.id;
+// Reservar una tutoría
+const reservar = (req, res) => {
+  const id = req.params.id;
+  const id_alumno = req.user.id;
 
-  tutoriaModel.getReservadasByProfesor(id_profesor, (err, results) => {
+  tutoriaModel.getTutoriaById(id, (err, results) => {
     if (err) {
-      console.error("Error al obtener tutorías del profesor:", err);
       return res.status(500).json({
-        message: "Error al obtener tutorías",
+        message: "Error servidor",
       });
     }
 
-    return res.status(200).json({
-      message: "Tutorías reservadas del profesor",
-      data: results,
+    if (results.length === 0) {
+      return res.status(404).json({
+        message: "Tutoría no encontrada",
+      });
+    }
+
+    const tutoria = results[0];
+
+    if (tutoria.estado_slot !== "DISPONIBLE") {
+      return res.status(400).json({
+        message: "La tutoría ya está reservada",
+      });
+    }
+
+    tutoriaModel.reservarTutoria(id, id_alumno, (err) => {
+      if (err) {
+        return res.status(500).json({
+          message: "Error al reservar",
+        });
+      }
+
+      return res.status(200).json({
+        message: "Tutoría reservada correctamente",
+      });
     });
   });
 };
 
+// Cancelar una reserva propia
+const cancelReservation = (req, res) => {
+  const id = req.params.id;
+  const id_alumno = req.user.id;
 
-// PROFESOR crea disponibilidad
+  tutoriaModel.getTutoriaById(id, (err, results) => {
+    if (err) {
+      return res.status(500).json({
+        message: "Error servidor",
+      });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({
+        message: "Tutoría no encontrada",
+      });
+    }
+
+    const tutoria = results[0];
+
+    if (tutoria.id_alumno !== id_alumno) {
+      return res.status(403).json({
+        message: "No puedes cancelar una tutoría que no es tuya",
+      });
+    }
+
+    tutoriaModel.cancelReservation(id, (err) => {
+      if (err) {
+        return res.status(500).json({
+          message: "Error al cancelar",
+        });
+      }
+
+      return res.status(200).json({
+        message: "Reserva cancelada correctamente",
+      });
+    });
+  });
+};
+
+// ============================
+// PROFESOR - Disponibilidades
+// ============================
+
+// Crear disponibilidad
 const createAvailability = (req, res) => {
   const { fecha_inicio, fecha_fin, ubicacion } = req.body;
   const id_profesor = req.user.id;
@@ -88,99 +177,76 @@ const createAvailability = (req, res) => {
   );
 };
 
-//  ALUMNO reserva tutoría
-const reservar = (req, res) => {
-  const id = req.params.id;
-  const id_alumno = req.user.id;
+// Obtener tutorías reservadas al profesor
+const getReservadasProfesor = (req, res) => {
+  const id_profesor = req.user.id;
 
-  tutoriaModel.getTutoriaById(id, (err, results) => {
+  tutoriaModel.getReservadasByProfesor(id_profesor, (err, results) => {
     if (err) {
-      return res.status(500).json({ message: "Error servidor" });
-    }
-
-    if (results.length === 0) {
-      return res.status(404).json({ message: "Tutoría no encontrada" });
-    }
-
-    const tutoria = results[0];
-
-    if (tutoria.estado_slot !== "DISPONIBLE") { //estado_slot es el estado de la tutoría, si no es disponible no se puede reservar
-      return res.status(400).json({
-        message: "La tutoría ya está reservada",
-      });
-    }
-
-    tutoriaModel.reservarTutoria(id, id_alumno, (err, result) => {
-      if (err) {
-        return res.status(500).json({ message: "Error al reservar" });
-      }
-
-      return res.status(200).json({
-        message: "Tutoría reservada correctamente",
-      });
-    });
-  });
-};
-
-// GET solo disponibilidades
-const getAvailableTutorias = (req, res) => { //tutorias disponibles avaiable
-  tutoriaModel.getAvailableTutorias((err, results) => {
-    if (err) {
-      console.error("Error al obtener disponibilidades:", err);
+      console.error("Error al obtener tutorías del profesor:", err);
       return res.status(500).json({
-        message: "Error al obtener disponibilidades",
+        message: "Error al obtener tutorías",
       });
     }
 
     return res.status(200).json({
-      message: "Disponibilidades obtenidas correctamente",
+      message: "Tutorías reservadas del profesor",
       data: results,
     });
   });
 };
 
-
-// ALUMNO cancela su reserva
-const cancelReservation = (req, res) => {
+// Cancelar disponibilidad propia
+const cancelAvailability = (req, res) => {
   const id = req.params.id;
-  const id_alumno = req.user.id;
+  const id_profesor = req.user.id;
 
   tutoriaModel.getTutoriaById(id, (err, results) => {
     if (err) {
-      return res.status(500).json({ message: "Error servidor" });
+      return res.status(500).json({
+        message: "Error servidor",
+      });
     }
 
     if (results.length === 0) {
-      return res.status(404).json({ message: "Tutoría no encontrada" });
+      return res.status(404).json({
+        message: "Tutoría no encontrada",
+      });
     }
 
     const tutoria = results[0];
 
-    if (tutoria.id_alumno !== id_alumno) {
+    if (tutoria.id_profesor !== id_profesor) {
       return res.status(403).json({
-        message: "No puedes cancelar una tutoría que no es tuya",
+        message: "No puedes cancelar una disponibilidad que no es tuya",
       });
     }
 
-    tutoriaModel.cancelReservation(id, (err) => {
+    tutoriaModel.cancelAvailability(id, (err) => {
       if (err) {
-        return res.status(500).json({ message: "Error al cancelar" });
+        return res.status(500).json({
+          message: "Error al cancelar disponibilidad",
+        });
       }
 
       return res.status(200).json({
-        message: "Reserva cancelada correctamente",
+        message: "Disponibilidad cancelada correctamente",
       });
     });
   });
 };
 
-// EXPORTAMOS LAS FUNCIONES PARA USARLAS EN LAS RUTAS 
+// ============================
+// Exportaciones
+// ============================
+
 module.exports = {
   getTutorias,
-  createAvailability,
-  reservar,
-  getMyReservations,
-  getReservadasProfesor,
   getAvailableTutorias,
-  cancelReservation
+  getMyReservations,
+  reservar,
+  cancelReservation,
+  createAvailability,
+  getReservadasProfesor,
+  cancelAvailability,
 };

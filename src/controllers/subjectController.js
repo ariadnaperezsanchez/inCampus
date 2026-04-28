@@ -3,8 +3,7 @@ const subjectModel = require("../models/Subject");
 const getSubjects = (req, res) => {
   subjectModel.obtenerSubjects((err, results) => {
     if (err) {
-      console.error("ERROR EN CONTROLLER:", err);
-      return res.status(500).json({ error: err.message });
+      return res.status(500).json({ error: "Error al obtener asignaturas" });
     }
 
     res.json(results);

@@ -60,5 +60,12 @@ router.put(
   tutoriaController.cancelReservation
 );
 
+//PUT para cancelar disponibilidad profe
+router.put(
+  "/:id/cancelar-disponibilidad",
+  protect,
+  authorize("PROFESOR"),
+  tutoriaController.cancelAvailability
+);
 
 module.exports = router;

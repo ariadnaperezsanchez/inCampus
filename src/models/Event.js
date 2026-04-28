@@ -16,13 +16,13 @@ const obtenerEventoPorId = (id, callback) => {
   });
 };
 
-const crearEvento = (titulo, descripcion, fecha, ubicacion, callback) => {
+const crearEvento = (titulo, descripcion, fecha, ubicacion, id_profesor, callback) => {
   const sql = `
-    INSERT INTO evento (titulo, descripcion, fecha, ubicacion)
-    VALUES (?, ?, ?, ?)
+    INSERT INTO evento (titulo, descripcion, fecha, ubicacion, id_profesor)
+    VALUES (?, ?, ?, ?, ?)
   `;
 
-  db.query(sql, [titulo, descripcion, fecha, ubicacion], (err, result) => {
+  db.query(sql, [titulo, descripcion, fecha, ubicacion, id_profesor], (err, result) => {
     if (err) return callback(err, null);
 
     callback(null, {
@@ -31,6 +31,7 @@ const crearEvento = (titulo, descripcion, fecha, ubicacion, callback) => {
       descripcion,
       fecha,
       ubicacion,
+      id_profesor
     });
   });
 };

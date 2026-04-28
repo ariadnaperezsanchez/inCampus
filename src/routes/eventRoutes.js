@@ -2,19 +2,15 @@ const express = require("express");
 const router = express.Router();
 const eventController = require("../controllers/eventController");
 
-router.get("/", eventController.getEvents);
-router.get("/:id", eventController.getEventById);
-router.post("/", eventController.createEvent);
-router.put("/:id", eventController.updateEvent);
-router.delete("/:id", eventController.deleteEvent);
+const { protect, authorize } = require("../middlewares/authMiddleware");
+
+// VER eventos (cualquier usuario logado)
+router.get("/", protect, eventController.getEvents);
+router.get("/:id", protect, eventController.getEventById);
+
+// CREAR / EDITAR / BORRAR → SOLO PROFESOR
+router.post("/", protect, authorize("PROFESOR"), eventController.createEvent);
+router.put("/:id", protect, authorize("PROFESOR"), eventController.updateEvent);
+router.delete("/:id", protect, authorize("PROFESOR"), eventController.deleteEvent);
 
 module.exports = router;
-
-/*const express = require("express");
-const router = express.Router();
-
-router.get("/", (req, res) => {
-res.json({ message: "Lista de eventos" });
-});
-
-module.exports = router;*/
