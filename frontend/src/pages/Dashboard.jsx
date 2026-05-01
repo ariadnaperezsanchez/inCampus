@@ -1,19 +1,10 @@
 import dashboardImg from "../assets/dashboard1.jpg";
 import Footer from "../components/Footer";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function Dashboard() {
-  const navigate = useNavigate();
-
   const usuarioGuardado = localStorage.getItem("usuario");
   const usuario = usuarioGuardado ? JSON.parse(usuarioGuardado) : {};
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("usuario");
-    localStorage.removeItem("rol");
-    navigate("/login");
-  };
 
   return (
     <>
@@ -30,8 +21,6 @@ function Dashboard() {
             Accede a tus tutorías, eventos y recursos académicos de forma rápida
             y sencilla.
           </p>
-
-          <button onClick={handleLogout}>Cerrar sesión</button>
         </section>
 
         <section className="dashboard-grid">

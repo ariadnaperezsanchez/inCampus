@@ -5,10 +5,11 @@ function Navbar() {
 
   return (
     <header className="navbar">
-     <div className="logo">
-  <span className="logo-in">In</span>
-  <span className="logo-campus">Campus</span>
-</div>
+      <Link to={token ? "/dashboard" : "/"} className="logo">
+        <span className="logo-in">In</span>
+        <span className="logo-campus">Campus</span>
+      </Link>
+
       {!token ? (
         <Link to="/login" className="login-btn">
           Iniciar sesión
