@@ -1,5 +1,4 @@
 import dashboardImg from "../assets/dashboard1.jpg";
-import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -12,13 +11,12 @@ function Dashboard() {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("usuario");
+    localStorage.removeItem("rol");
     navigate("/login");
   };
 
   return (
     <>
-      
-
       <main className="dashboard-page">
         <section className="dashboard-header">
           <span>
@@ -42,29 +40,19 @@ function Dashboard() {
             <p>Reserva o consulta tus próximas tutorías.</p>
           </Link>
 
-          <Link to="/mis-tutorias" className="dashboard-card">
-            <h2>Mis tutorías</h2>
-            <p>Consulta tus tutorías reservadas.</p>
-          </Link>
-
           <Link to="/events" className="dashboard-card">
             <h2>Eventos</h2>
             <p>Consulta el calendario académico e inscríbete.</p>
           </Link>
 
-          {usuario.rol === "PROFESOR" && (
-            <Link to="/asignatura" className="dashboard-card">
-              <h2>Asignaturas</h2>
-              <p>Gestiona tus asignaturas y sube documentos.</p>
-            </Link>
-          )}
-
-          {usuario.rol === "ALUMNO" && (
-            <Link to="/asignatura-alumno" className="dashboard-card">
-              <h2>Asignaturas</h2>
-              <p>Consulta los documentos subidos por tus profesores.</p>
-            </Link>
-          )}
+          <Link to="/asignatura" className="dashboard-card">
+            <h2>Asignaturas</h2>
+            <p>
+              {usuario.rol === "PROFESOR"
+                ? "Gestiona tus asignaturas y sube documentos."
+                : "Consulta los documentos subidos por tus profesores."}
+            </p>
+          </Link>
         </section>
 
         <section className="dashboard-footer">
