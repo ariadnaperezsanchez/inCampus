@@ -1,31 +1,82 @@
 const db = require("../config/db");
 
-// GET todas las tutorías
 const getAllTutorias = (callback) => {
-  const sql = "SELECT * FROM tutoria";
+  const sql = `
+    SELECT 
+      t.id_tutoria,
+      t.fecha_inicio,
+      t.fecha_fin,
+      t.ubicacion,
+      t.estado_slot,
+      t.id_profesor,
+      t.id_alumno,
+      CONCAT(p.nombre, ' ', p.apellido1) AS profesor,
+      CONCAT(a.nombre, ' ', a.apellido1) AS alumno
+    FROM tutoria t
+    LEFT JOIN usuario p ON t.id_profesor = p.id_usuario
+    LEFT JOIN usuario a ON t.id_alumno = a.id_usuario
+    ORDER BY t.fecha_inicio ASC
+  `;
+
   db.query(sql, callback);
 };
 
-// Obtener reservas del alumno
+const getTutoriasByProfesor = (id_profesor, callback) => {
+  const sql = `
+    SELECT 
+      t.id_tutoria,
+      t.fecha_inicio,
+      t.fecha_fin,
+      t.ubicacion,
+      t.estado_slot,
+      t.id_profesor,
+      t.id_alumno,
+      CONCAT(a.nombre, ' ', a.apellido1) AS alumno
+    FROM tutoria t
+    LEFT JOIN usuario a ON t.id_alumno = a.id_usuario
+    WHERE t.id_profesor = ?
+    ORDER BY t.fecha_inicio ASC
+  `;
+
+  db.query(sql, [id_profesor], callback);
+};
+
 const getReservationsByStudent = (id_alumno, callback) => {
   const sql = `
-    SELECT *
-    FROM tutoria
-    WHERE id_alumno = ?
-    ORDER BY fecha_inicio ASC
+    SELECT 
+      t.id_tutoria,
+      t.fecha_inicio,
+      t.fecha_fin,
+      t.ubicacion,
+      t.estado_slot,
+      t.id_profesor,
+      t.id_alumno,
+      CONCAT(p.nombre, ' ', p.apellido1) AS profesor
+    FROM tutoria t
+    LEFT JOIN usuario p ON t.id_profesor = p.id_usuario
+    WHERE t.id_alumno = ?
+    ORDER BY t.fecha_inicio ASC
   `;
 
   db.query(sql, [id_alumno], callback);
 };
 
-// GET resersvas al profe hechas por alumnos
 const getReservadasByProfesor = (id_profesor, callback) => {
   const sql = `
-    SELECT *
-    FROM tutoria
-    WHERE id_profesor = ?
-    AND estado_slot = 'RESERVADA'
-    ORDER BY fecha_inicio ASC
+    SELECT 
+      t.id_tutoria,
+      t.fecha_inicio,
+      t.fecha_fin,
+      t.ubicacion,
+      t.estado_slot,
+      t.id_profesor,
+      t.id_alumno,
+      CONCAT(a.nombre, ' ', a.apellido1) AS alumno
+    FROM tutoria t
+    LEFT JOIN usuario a ON t.id_alumno = a.id_usuario
+    WHERE t.id_profesor = ?
+      AND t.estado_slot = 'RESERVADA'
+    ORDER BY t.fecha_inicio ASC
   `;
 
   db.query(sql, [id_profesor], callback);
@@ -33,17 +84,23 @@ const getReservadasByProfesor = (id_profesor, callback) => {
 
 const getAvailableTutorias = (callback) => {
   const sql = `
-    SELECT *
-    FROM tutoria
-    WHERE estado_slot = 'DISPONIBLE'
-    ORDER BY fecha_inicio ASC
+    SELECT 
+      t.id_tutoria,
+      t.fecha_inicio,
+      t.fecha_fin,
+      t.ubicacion,
+      t.estado_slot,
+      t.id_profesor,
+      CONCAT(p.nombre, ' ', p.apellido1) AS profesor
+    FROM tutoria t
+    LEFT JOIN usuario p ON t.id_profesor = p.id_usuario
+    WHERE t.estado_slot = 'DISPONIBLE'
+    ORDER BY t.fecha_inicio ASC
   `;
 
   db.query(sql, callback);
 };
 
-
-// Crear disponibilidad (PROFESOR)
 const createAvailability = (
   fecha_inicio,
   fecha_fin,
@@ -52,25 +109,25 @@ const createAvailability = (
   callback
 ) => {
   const sql = `
-    INSERT INTO tutoria (fecha_inicio, fecha_fin, ubicacion, estado_slot, id_profesor)
+    INSERT INTO tutoria 
+    (fecha_inicio, fecha_fin, ubicacion, estado_slot, id_profesor)
     VALUES (?, ?, ?, 'DISPONIBLE', ?)
   `;
 
   db.query(sql, [fecha_inicio, fecha_fin, ubicacion, id_profesor], callback);
 };
 
-// Obtener tutoría por ID
 const getTutoriaById = (id, callback) => {
   const sql = "SELECT * FROM tutoria WHERE id_tutoria = ?";
   db.query(sql, [id], callback);
 };
 
-// Reservar tutoría
 const reservarTutoria = (id, id_alumno, callback) => {
   const sql = `
     UPDATE tutoria 
     SET id_alumno = ?, estado_slot = 'RESERVADA'
     WHERE id_tutoria = ?
+      AND estado_slot = 'DISPONIBLE'
   `;
 
   db.query(sql, [id_alumno, id], callback);
@@ -97,9 +154,9 @@ const cancelAvailability = (id, callback) => {
   db.query(sql, [id], callback);
 };
 
-// Exportar funciones del modelo para usarlas en el controlador 
 module.exports = {
   getAllTutorias,
+  getTutoriasByProfesor,
   createAvailability,
   getTutoriaById,
   reservarTutoria,
@@ -107,5 +164,5 @@ module.exports = {
   getReservadasByProfesor,
   getAvailableTutorias,
   cancelReservation,
-  cancelAvailability
+  cancelAvailability,
 };
