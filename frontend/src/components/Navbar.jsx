@@ -1,24 +1,33 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function Navbar() {
-  const location = useLocation();
-  const isHome = location.pathname === "/";
+  const token = localStorage.getItem("token");
 
   return (
     <header className="navbar">
-      <div className="logo">InCampus</div>
-
-      {isHome ? (
+     <div className="logo">
+  <span className="logo-in">In</span>
+  <span className="logo-campus">Campus</span>
+</div>
+      {!token ? (
         <Link to="/login" className="login-btn">
           Iniciar sesión
         </Link>
       ) : (
         <nav className="nav-links">
-          <Link to="/">Inicio</Link>
+          <Link to="/dashboard">Inicio</Link>
           <Link to="/events">Eventos</Link>
           <Link to="/tutorias">Tutorías</Link>
-          <Link to="/Asignatura">Asignaturas</Link>
-          <Link to="/Dashboard">Inicio</Link>
+          <Link to="/asignatura">Asignaturas</Link>
+
+          <button
+            onClick={() => {
+              localStorage.clear();
+              window.location.href = "/";
+            }}
+          >
+            Cerrar sesión
+          </button>
         </nav>
       )}
     </header>

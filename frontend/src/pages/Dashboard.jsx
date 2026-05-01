@@ -17,8 +17,6 @@ function Dashboard() {
 
   return (
     <>
-      <Navbar />
-
       <main className="dashboard-page">
         <section className="dashboard-header">
           <span>
@@ -33,18 +31,12 @@ function Dashboard() {
             y sencilla.
           </p>
 
-          <button onClick={handleLogout}>Cerrar sesión</button>
         </section>
 
         <section className="dashboard-grid">
           <Link to="/tutorias" className="dashboard-card">
             <h2>Tutorías</h2>
             <p>Reserva o consulta tus próximas tutorías.</p>
-          </Link>
-
-          <Link to="/mis-tutorias" className="dashboard-card">
-            <h2>Mis tutorías</h2>
-            <p>Consulta tus tutorías reservadas.</p>
           </Link>
 
           <Link to="/events" className="dashboard-card">

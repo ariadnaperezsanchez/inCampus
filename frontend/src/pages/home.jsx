@@ -8,7 +8,6 @@ function Home() {
 
   return (
     <>
-      <Navbar />
 
       <main className="home">
         <section className="hero">
@@ -21,22 +20,6 @@ function Home() {
               InCampus centraliza tutorías, eventos, anuncios y documentos
               académicos en una única plataforma para toda la comunidad educativa.
             </p>
-
-            <div className="hero-actions">
-              <button
-                className="btn primary"
-                onClick={() => navigate('/login')}
-              >
-                Iniciar sesión
-              </button>
-
-              <button
-                className="btn secondary"
-                onClick={() => navigate('/contact')} /*crear ruta de contacto*/
-              >
-                Contáctanos
-              </button>
-            </div>
           </div>
 
           <div className="hero-card">

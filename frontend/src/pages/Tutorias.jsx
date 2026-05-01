@@ -94,8 +94,6 @@ function Tutorias() {
 
   return (
     <>
-      <Navbar />
-
       <main className="tutorias-page">
         <section className="tutorias-hero">
           <span className="badge">Tutorías académicas</span>
