@@ -54,14 +54,7 @@ function App() {
           }
         />
 
-        <Route
-          path="/mis-tutorias"
-          element={
-            <PrivateRoute>
-              <MisTutorias />
-            </PrivateRoute>
-          }
-        />
+        
 
         <Route
           path="/asignatura"

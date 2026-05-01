@@ -17,7 +17,7 @@ function Dashboard() {
 
   return (
     <>
-      <Navbar />
+      
 
       <main className="dashboard-page">
         <section className="dashboard-header">

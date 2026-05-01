@@ -9,30 +9,6 @@ function AsignaturaAlumno() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
 
-  const cargarAsignaturas = async () => {
-    try {
-      setLoading(true);
-      setError("");
-
-      const res = await fetch("http://localhost:3000/subjects");
-      const data = await res.json();
-
-      setAsignaturas(data);
-
-      if (data.length > 0) {
-        const id = data[0].id_asignatura || data[0].id;
-        setIdAsignatura(id);
-        await cargarDocumentos(id);
-      }
-
-    } catch (err) {
-      console.error(err);
-      setError("No se pudo cargar asignaturas");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const cargarDocumentos = async (id) => {
     try {
       const token = localStorage.getItem("token");
@@ -54,10 +30,32 @@ function AsignaturaAlumno() {
       }
 
       setDocumentos(data.data || data);
-
     } catch (err) {
       console.error(err);
       setError("Error conectando con backend");
+    }
+  };
+
+  const cargarAsignaturas = async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const res = await fetch("http://localhost:3000/subjects");
+      const data = await res.json();
+
+      setAsignaturas(data);
+
+      if (data.length > 0) {
+        const id = data[0].id_asignatura || data[0].id;
+        setIdAsignatura(id);
+        await cargarDocumentos(id);
+      }
+    } catch (err) {
+      console.error(err);
+      setError("No se pudo cargar asignaturas");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -71,50 +69,74 @@ function AsignaturaAlumno() {
     await cargarDocumentos(id);
   };
 
-  if (loading) return <p>Cargando asignaturas...</p>;
-
   return (
     <>
-      <Navbar />
+      
 
       <main className="asignatura-page">
-        <h1>Mis asignaturas</h1>
+        <section className="asignatura-header">
+          <span>Asignaturas</span>
+          <h1>Mis asignaturas</h1>
+          <p>Consulta los documentos disponibles de tus asignaturas.</p>
+        </section>
 
-        {error && <p style={{ color: "red" }}>{error}</p>}
+        {error && (
+          <p style={{ color: "red", maxWidth: "1100px", margin: "0 auto 20px" }}>
+            {error}
+          </p>
+        )}
 
-        <select value={idAsignatura} onChange={cambiarAsignatura}>
-          {asignaturas.map((asignatura) => {
-            const id = asignatura.id_asignatura || asignatura.id;
-
-            return (
-              <option key={id} value={id}>
-                {asignatura.nombre}
-              </option>
-            );
-          })}
-        </select>
-
-        <h2>Documentos</h2>
-
-        {documentos.length === 0 ? (
-          <p>No hay documentos</p>
+        {loading ? (
+          <p style={{ maxWidth: "1100px", margin: "0 auto" }}>
+            Cargando asignaturas...
+          </p>
         ) : (
-          <ul>
-            {documentos.map((doc) => (
-              <li key={doc.id_documento}>
-                <strong>{doc.titulo}</strong>
-                <br />
-                {doc.fecha_subida}
-                <br />
-                <a
-                  href={`http://localhost:3000/${doc.url_archivo}`}
-                  target="_blank"
-                >
-                  Ver PDF
-                </a>
-              </li>
-            ))}
-          </ul>
+          <>
+            <section className="student-info">
+              <p>Selecciona una asignatura para ver sus documentos.</p>
+
+              <select value={idAsignatura} onChange={cambiarAsignatura}>
+                {asignaturas.map((asignatura) => {
+                  const id = asignatura.id_asignatura || asignatura.id;
+
+                  return (
+                    <option key={id} value={id}>
+                      {asignatura.nombre}
+                    </option>
+                  );
+                })}
+              </select>
+            </section>
+
+            <section className="docs-section">
+              <h2>Documentos</h2>
+
+              {documentos.length === 0 ? (
+                <p className="empty-docs">No hay documentos disponibles.</p>
+              ) : (
+                <div className="docs-grid">
+                  {documentos.map((doc) => (
+                    <article className="doc-card" key={doc.id_documento}>
+                      <div>
+                        <span className="doc-type">{doc.tipo || "PDF"}</span>
+                        <h3>{doc.titulo}</h3>
+                        <p>{doc.fecha_subida}</p>
+                      </div>
+
+                      <a
+                        className="doc-link"
+                        href={`http://localhost:3000/${doc.url_archivo}`}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Ver PDF
+                      </a>
+                    </article>
+                  ))}
+                </div>
+              )}
+            </section>
+          </>
         )}
       </main>
 

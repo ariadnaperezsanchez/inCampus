@@ -8,7 +8,7 @@ function Home() {
 
   return (
     <>
-      <Navbar />
+      
 
       <main className="home">
         <section className="hero">

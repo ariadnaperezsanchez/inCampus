@@ -3,31 +3,70 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
 function Tutorias() {
-  const [tutorias, setTutorias] = useState([]);
+  const [disponibles, setDisponibles] = useState([]);
+  const [misReservas, setMisReservas] = useState([]);
+  const [tutoriasProfesor, setTutoriasProfesor] = useState([]);
+
+  const [fechaInicio, setFechaInicio] = useState("");
+  const [fechaFin, setFechaFin] = useState("");
+  const [ubicacion, setUbicacion] = useState("");
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const cargarTutorias = async () => {
+  const rol = localStorage.getItem("rol");
+
+  const fetchAuth = async (url, options = {}) => {
+    const token = localStorage.getItem("token");
+
+    return fetch(url, {
+      ...options,
+      headers: {
+        ...(options.headers || {}),
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  };
+
+  const cargarDatos = async () => {
     try {
       setLoading(true);
       setError("");
 
-      const token = localStorage.getItem("token");
+      if (rol === "PROFESOR") {
+        const res = await fetchAuth("http://localhost:3000/tutorias");
+        const data = await res.json();
 
-      const res = await fetch("http://localhost:3000/tutorias/disponibles", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+        if (!res.ok) {
+          setError(data.message || "Error al cargar tutorías");
+          return;
+        }
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.message || "Error al cargar tutorías");
-        return;
+        setTutoriasProfesor(data.data || data);
       }
 
-      setTutorias(data.data || data);
+      if (rol === "ALUMNO") {
+        const [resDisponibles, resReservas] = await Promise.all([
+          fetchAuth("http://localhost:3000/tutorias/disponibles"),
+          fetchAuth("http://localhost:3000/tutorias/mis-reservas"),
+        ]);
+
+        const dataDisponibles = await resDisponibles.json();
+        const dataReservas = await resReservas.json();
+
+        if (!resDisponibles.ok) {
+          setError(dataDisponibles.message || "Error al cargar disponibilidades");
+          return;
+        }
+
+        if (!resReservas.ok) {
+          setError(dataReservas.message || "Error al cargar tus reservas");
+          return;
+        }
+
+        setDisponibles(dataDisponibles.data || dataDisponibles);
+        setMisReservas(dataReservas.data || dataReservas);
+      }
     } catch (err) {
       console.error(err);
       setError("No se pudo conectar con el servidor");
@@ -37,18 +76,47 @@ function Tutorias() {
   };
 
   useEffect(() => {
-    cargarTutorias();
+    cargarDatos();
   }, []);
+
+  const crearDisponibilidad = async (e) => {
+    e.preventDefault();
+
+    try {
+      const res = await fetchAuth("http://localhost:3000/tutorias", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          fecha_inicio: fechaInicio,
+          fecha_fin: fechaFin,
+          ubicacion,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.message || "Error al crear disponibilidad");
+        return;
+      }
+
+      setFechaInicio("");
+      setFechaFin("");
+      setUbicacion("");
+
+      await cargarDatos();
+    } catch (err) {
+      console.error(err);
+      alert("No se pudo conectar con el servidor");
+    }
+  };
 
   const reservarTutoria = async (id) => {
     try {
-      const token = localStorage.getItem("token");
-
-      const res = await fetch(`http://localhost:3000/tutorias/${id}/reservar`, {
+      const res = await fetchAuth(`http://localhost:3000/tutorias/${id}/reservar`, {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
       });
 
       const data = await res.json();
@@ -58,23 +126,17 @@ function Tutorias() {
         return;
       }
 
-      alert("Tutoría reservada correctamente");
-      await cargarTutorias();
+      await cargarDatos();
     } catch (err) {
       console.error(err);
       alert("No se pudo conectar con el servidor");
     }
   };
 
-  const cancelarTutoria = async (id) => {
+  const cancelarReserva = async (id) => {
     try {
-      const token = localStorage.getItem("token");
-
-      const res = await fetch(`http://localhost:3000/tutorias/${id}/cancelar`, {
+      const res = await fetchAuth(`http://localhost:3000/tutorias/${id}/cancelar`, {
         method: "PUT",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
       });
 
       const data = await res.json();
@@ -84,82 +146,217 @@ function Tutorias() {
         return;
       }
 
-      alert("Tutoría cancelada correctamente");
-      await cargarTutorias();
+      await cargarDatos();
     } catch (err) {
       console.error(err);
       alert("No se pudo conectar con el servidor");
     }
   };
 
+  const cancelarDisponibilidad = async (id) => {
+    try {
+      const res = await fetchAuth(
+        `http://localhost:3000/tutorias/${id}/cancelar-disponibilidad`,
+        {
+          method: "PUT",
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.message || "Error al cancelar disponibilidad");
+        return;
+      }
+
+      await cargarDatos();
+    } catch (err) {
+      console.error(err);
+      alert("No se pudo conectar con el servidor");
+    }
+  };
+
+  const formatearFecha = (fecha) => {
+    if (!fecha) return "Sin fecha";
+    return new Date(fecha).toLocaleString("es-ES");
+  };
+
   return (
     <>
-      <Navbar />
+      
 
       <main className="tutorias-page">
         <section className="tutorias-hero">
           <span className="badge">Tutorías académicas</span>
-          <h1>Reserva una tutoría con tus profesores</h1>
-          <p>
-            Consulta la disponibilidad de los profesores y reserva una tutoría
-            de forma rápida y sencilla.
-          </p>
+
+          {rol === "PROFESOR" ? (
+            <>
+              <h1>Gestionar tutorías</h1>
+              <p>Crea disponibilidades y revisa las reservas de tus alumnos.</p>
+            </>
+          ) : (
+            <>
+              <h1>Reservar tutorías</h1>
+              <p>Reserva una disponibilidad y consulta tus tutorías reservadas.</p>
+            </>
+          )}
         </section>
 
         {loading && <p>Cargando tutorías...</p>}
         {error && <p style={{ color: "red" }}>{error}</p>}
 
-        {!loading && !error && (
-          <section className="tutorias-grid">
-            {tutorias.length === 0 ? (
-              <p>No hay tutorías disponibles</p>
-            ) : (
-              tutorias.map((tutoria) => {
-                const id = tutoria.id_tutoria || tutoria.id;
+        {!loading && !error && rol === "PROFESOR" && (
+          <>
+            <section className="tutoria-card">
+              <h2>Crear disponibilidad</h2>
 
-                return (
-                  <article className="tutoria-card" key={id}>
-                    <h2>
-                      {tutoria.profesor ||
-                        tutoria.nombre_profesor ||
-                        tutoria.nombre}
-                    </h2>
+              <form onSubmit={crearDisponibilidad}>
+                <input
+                  type="datetime-local"
+                  value={fechaInicio}
+                  onChange={(e) => setFechaInicio(e.target.value)}
+                  required
+                />
+
+                <input
+                  type="datetime-local"
+                  value={fechaFin}
+                  onChange={(e) => setFechaFin(e.target.value)}
+                  required
+                />
+
+                <input
+                  type="text"
+                  placeholder="Ubicación"
+                  value={ubicacion}
+                  onChange={(e) => setUbicacion(e.target.value)}
+                  required
+                />
+
+                <button className="btn primary" type="submit">
+                  Crear disponibilidad
+                </button>
+              </form>
+            </section>
+
+            <section className="tutorias-grid">
+              {tutoriasProfesor.length === 0 ? (
+                <p>No tienes disponibilidades creadas.</p>
+              ) : (
+                tutoriasProfesor.map((t) => (
+                  <article className="tutoria-card" key={t.id_tutoria}>
+                    <h2>Disponibilidad #{t.id_tutoria}</h2>
 
                     <p>
-                      <strong>Asignatura:</strong>{" "}
-                      {tutoria.asignatura ||
-                        tutoria.nombre_asignatura ||
-                        "Sin asignatura"}
+                      <strong>Inicio:</strong> {formatearFecha(t.fecha_inicio)}
                     </p>
 
                     <p>
-                      <strong>Horario:</strong>{" "}
-                      {tutoria.horario ||
-                        tutoria.fecha ||
-                        tutoria.fecha_hora ||
-                        "Horario no disponible"}
+                      <strong>Fin:</strong> {formatearFecha(t.fecha_fin)}
                     </p>
 
-                    {tutoria.reservada ? (
+                    <p>
+                      <strong>Ubicación:</strong> {t.ubicacion}
+                    </p>
+
+                    <p>
+                      <strong>Estado:</strong> {t.estado_slot}
+                    </p>
+
+                    {t.estado_slot === "RESERVADA" && (
+                      <p>
+                        <strong>Alumno:</strong>{" "}
+                        {t.alumno || `ID alumno ${t.id_alumno}`}
+                      </p>
+                    )}
+
+                    {t.estado_slot === "DISPONIBLE" && (
                       <button
                         className="btn secondary"
-                        onClick={() => cancelarTutoria(id)}
+                        onClick={() => cancelarDisponibilidad(t.id_tutoria)}
                       >
-                        Cancelar tutoría
-                      </button>
-                    ) : (
-                      <button
-                        className="btn primary"
-                        onClick={() => reservarTutoria(id)}
-                      >
-                        Reservar tutoría
+                        Cancelar disponibilidad
                       </button>
                     )}
                   </article>
-                );
-              })
-            )}
-          </section>
+                ))
+              )}
+            </section>
+          </>
+        )}
+
+        {!loading && !error && rol === "ALUMNO" && (
+          <>
+            <h2>Disponibilidades disponibles</h2>
+
+            <section className="tutorias-grid">
+              {disponibles.length === 0 ? (
+                <p>No hay tutorías disponibles.</p>
+              ) : (
+                disponibles.map((t) => (
+                  <article className="tutoria-card" key={t.id_tutoria}>
+                    <h2>{t.profesor || "Profesor"}</h2>
+
+                    <p>
+                      <strong>Inicio:</strong> {formatearFecha(t.fecha_inicio)}
+                    </p>
+
+                    <p>
+                      <strong>Fin:</strong> {formatearFecha(t.fecha_fin)}
+                    </p>
+
+                    <p>
+                      <strong>Ubicación:</strong> {t.ubicacion}
+                    </p>
+
+                    <button
+                      className="btn primary"
+                      onClick={() => reservarTutoria(t.id_tutoria)}
+                    >
+                      Reservar tutoría
+                    </button>
+                  </article>
+                ))
+              )}
+            </section>
+
+            <h2>Mis tutorías reservadas</h2>
+
+            <section className="tutorias-grid">
+              {misReservas.length === 0 ? (
+                <p>No tienes tutorías reservadas.</p>
+              ) : (
+                misReservas.map((t) => (
+                  <article className="tutoria-card" key={t.id_tutoria}>
+                    <h2>{t.profesor || "Profesor"}</h2>
+
+                    <p>
+                      <strong>Inicio:</strong> {formatearFecha(t.fecha_inicio)}
+                    </p>
+
+                    <p>
+                      <strong>Fin:</strong> {formatearFecha(t.fecha_fin)}
+                    </p>
+
+                    <p>
+                      <strong>Ubicación:</strong> {t.ubicacion}
+                    </p>
+
+                    <p>
+                      <strong>Estado:</strong> {t.estado_slot}
+                    </p>
+
+                    <button
+                      className="btn secondary"
+                      onClick={() => cancelarReserva(t.id_tutoria)}
+                    >
+                      Cancelar reserva
+                    </button>
+                  </article>
+                ))
+              )}
+            </section>
+          </>
         )}
       </main>
 
@@ -169,167 +366,3 @@ function Tutorias() {
 }
 
 export default Tutorias;
-/*import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
-import { useEffect, useState } from "react";
-
-function Tutorias() {
-  const [tutorias, setTutorias] = useState([]);
-  const [tutoriaReservada, setTutoriaReservada] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    const cargarTutorias = async () => {
-      try {
-        const token = localStorage.getItem("token");
-
-        const res = await fetch("http://localhost:3000/tutorias/disponibles", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const data = await res.json();
-
-        if (!res.ok) {
-          setError(data.message || "Error al cargar tutorías");
-          return;
-        }
-
-        setTutorias(data);
-      } catch (err) {
-        console.error(err);
-        setError("No se pudo conectar con el servidor");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    cargarTutorias();
-  }, []);
-
-  const reservarTutoria = async (id) => {
-    try {
-      const token = localStorage.getItem("token");
-
-      const res = await fetch(
-        `http://localhost:3000/tutorias/${id}/reservar`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        alert(data.message || "Error al reservar tutoría");
-        return;
-      }
-
-      setTutoriaReservada(id);
-      alert("Tutoría reservada correctamente");
-    } catch (err) {
-      console.error(err);
-      alert("No se pudo conectar con el servidor");
-    }
-  };
-
-  const cancelarTutoria = async (id) => {
-    try {
-      const token = localStorage.getItem("token");
-
-      const res = await fetch(
-        `http://localhost:3000/tutorias/${id}/cancelar`,
-        {
-          method: "PUT",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        alert(data.message || "Error al cancelar tutoría");
-        return;
-      }
-
-      setTutoriaReservada(null);
-      alert("Tutoría cancelada correctamente");
-    } catch (err) {
-      console.error(err);
-      alert("No se pudo conectar con el servidor");
-    }
-  };
-
-  return (
-    <>
-      <Navbar />
-
-      <main className="tutorias-page">
-        <section className="tutorias-hero">
-          <span className="badge">Tutorías académicas</span>
-          <h1>Reserva una tutoría con tus profesores</h1>
-          <p>
-            Consulta la disponibilidad de los profesores y reserva una tutoría
-            de forma rápida y sencilla.
-          </p>
-        </section>
-
-        {loading && <p>Cargando tutorías...</p>}
-        {error && <p style={{ color: "red" }}>{error}</p>}
-
-        {!loading && !error && (
-          <section className="tutorias-grid">
-            {tutorias.length === 0 ? (
-              <p>No hay tutorías disponibles</p>
-            ) : (
-              tutorias.map((tutoria) => (
-                <article className="tutoria-card" key={tutoria.id}>
-                  <h2>{tutoria.profesor || tutoria.nombre}</h2>
-
-                  <p>
-                    <strong>Asignatura:</strong>{" "}
-                    {tutoria.asignatura || "Sin asignatura"}
-                  </p>
-
-                  <p>
-                    <strong>Horario:</strong>{" "}
-                    {tutoria.horario ||
-                      tutoria.fecha ||
-                      "Horario no disponible"}
-                  </p>
-
-                  {tutoriaReservada === tutoria.id ? (
-                    <button
-                      className="btn secondary"
-                      onClick={() => cancelarTutoria(tutoria.id)}
-                    >
-                      Cancelar tutoría
-                    </button>
-                  ) : (
-                    <button
-                      className="btn primary"
-                      onClick={() => reservarTutoria(tutoria.id)}
-                    >
-                      Reservar tutoría
-                    </button>
-                  )}
-                </article>
-              ))
-            )}
-          </section>
-        )}
-      </main>
-
-      <Footer />
-    </>
-  );
-}
-
-export default Tutorias;*/
