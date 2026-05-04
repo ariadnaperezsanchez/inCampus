@@ -29,13 +29,6 @@ function Home() {
               >
                 Iniciar sesión
               </button>
-
-              <button
-                className="btn secondary"
-                onClick={() => navigate('/contact')} /*crear ruta de contacto*/
-              >
-                Contáctanos
-              </button>
             </div>
           </div>
 
