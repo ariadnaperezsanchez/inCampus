@@ -11,7 +11,7 @@ function Dashboard() {
       <main className="dashboard-page">
         <section className="dashboard-header">
           <span>
-            Bienvenida, {usuario.nombre || usuario.email || "usuario"}
+            Te damos la bienvenida, {usuario.nombre || usuario.email || "usuario"}
           </span>
 
           <h1>Tu lugar en InCampus</h1>

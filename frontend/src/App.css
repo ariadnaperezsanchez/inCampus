@@ -1,19 +1,34 @@
-/* APP.CSS SIMPLE MODERNO */
+/* NAVBAR RESPONSIVE */
 
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 24px;
   padding: 24px 40px;
   background: rgba(255, 255, 255, 0.82);
   backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(152, 113, 219, 0.18);
+  border-bottom: 1px solid rgba(168, 117, 134, 0.18);
 }
 
+.btn-hero{
+  margin-top: 50px;
+  display: inline-block;
+  padding: 12px 22px;
+  border: none;
+  border-radius: 999px;
+  background: var(--purple);
+  color: white;
+  font-weight: 800;
+  text-decoration: none;
+  cursor: pointer;
+
+}
 .logo {
   font-size: 24px;
   font-weight: 800;
   text-decoration: none;
+  white-space: nowrap;
 }
 
 .logo-in {
@@ -28,23 +43,46 @@
   display: flex;
   gap: 20px;
   align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .nav-links a,
 .nav-links button,
 .back-home {
   display: inline-block;
-  margin-top: 22px;
+  margin-top: 30px;
   font-size: 15px;
-  color: var(--mauve);
+  color: var(--rose);
   font-weight: 600;
   text-decoration: none;
 }
 
+.nav-links a:hover,
+.nav-links button:hover,
 .back-home:hover {
   color: var(--purple);
 }
 
+@media (max-width: 700px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 22px 24px;
+  }
+
+  .nav-links {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 14px;
+  }
+
+  .nav-links a,
+  .nav-links button,
+  .back-home {
+    font-size: 14px;
+  }
+}
 .nav-links a:hover,
 .nav-links button:hover,
 .back-home:hover {
@@ -65,6 +103,19 @@
   font-weight: 800;
   text-decoration: none;
   cursor: pointer;
+}
+.logout-btn {
+  border: 1px solid rgba(152, 113, 219, 0.25);
+  background: rgba(152, 113, 219, 0.1);
+  color: var(--purple);
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background: rgba(152, 113, 219, 0.2);
 }
 
 .home,
@@ -100,13 +151,15 @@
 .dashboard-header span,
 .asignatura-header span,
 .doc-type {
-  display: inline-block;
+  display: block;
   margin-bottom: 18px;
+  margin-top: 50px;
   color: var(--rose);
   font-size: 14px;
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+
 }
 
 .hero h1,
@@ -116,7 +169,7 @@
 .events-hero h1 {
   font-size: clamp(38px, 6vw, 64px);
   line-height: 1.05;
-  margin-bottom: 18px;
+  margin-bottom: 30px;
 }
 
 .hero p,
@@ -127,7 +180,7 @@
   max-width: 720px;
   font-size: 19px;
   padding-top: 10px;
-  margin-top: 10px;
+  margin-top: 30px;
 }
 
 .hero-card,
@@ -146,6 +199,7 @@
   padding: 30px;
   box-shadow: 0 18px 45px rgba(80, 45, 120, 0.12);
   backdrop-filter: blur(16px);
+  margin-bottom: 50px;
 }
 
 .hero-card ul {
@@ -220,7 +274,6 @@
 }
 
 .dashboard-grid,
-.tutorias-grid,
 .docs-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -306,6 +359,110 @@
   background: rgba(255, 255, 255, 0.45);
 }
 
+/*Asignaturas form*/
+.student-info {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 30px;
+}
+.upload-box button {
+  margin-bottom: 30px;
+  width: 100%;
+  margin-top: 30px;
+}
+.upload-box form {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.upload-box p {
+  margin-bottom: 28px;
+}
+
+/*Tutorias form*/
+
+.student-info select {
+  padding: 12px 16px;
+  border: 1px solid rgba(152, 113, 219, 0.25);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--deep-purple);
+  font-size: 15px;
+  outline: none;
+  transition: 0.2s ease;
+}
+
+.student-info select:focus {
+  border-color: var(--purple);
+  box-shadow: 0 0 0 4px rgba(152, 113, 219, 0.14);
+}
+.tutorias-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr auto;
+  gap: 14px;
+  align-items: center;
+}
+.upload-box input[type="file"] {
+  border: 1px solid rgba(152, 113, 219, 0.25);
+  border-radius: 18px;
+  padding: 6px;
+  font-size: 14px;
+  background: white;
+  color: var(--deep-purple);
+}
+
+.upload-box input[type="file"]::file-selector-button {
+  border: none;
+  border-radius: 999px;
+  padding: 8px 14px;
+  margin-right: 10px;
+  background: rgba(152, 113, 219, 0.15);
+  color: var(--purple);
+  font-weight: 700;
+  cursor: pointer;
+}
+.tutorias-form input {
+  padding: 14px 16px;
+  border: 1px solid rgba(152, 113, 219, 0.25);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--deep-purple);
+  font-size: 15px;
+  outline: none;
+}
+
+.tutorias-form input:focus {
+  border-color: var(--purple);
+  box-shadow: 0 0 0 4px rgba(152, 113, 219, 0.14);
+}
+
+.tutorias-form input::placeholder {
+  color: var(--mauve);
+}
+
+.tutorias-form button {
+  margin-top: 0;
+  width: auto;
+  white-space: nowrap;
+}
+
+@media (max-width: 850px) {
+  .tutorias-form {
+    grid-template-columns: 1fr;
+  }
+
+  .tutorias-form button {
+    width: 100%;
+  }
+}
+
+/*Footer TODO*/
+.dashboard-footer {
+  text-align: center;
+  color: var(--mauve);
+  font-size: 30px;
+  padding: 40px 0;
+}
 
 .footer {
   margin-top: 60px;

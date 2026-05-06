@@ -22,6 +22,7 @@ function Navbar() {
           <Link to="/asignatura">Asignaturas</Link>
 
           <button
+          className="logout-btn"
             onClick={() => {
               localStorage.clear();
               window.location.href = "/";

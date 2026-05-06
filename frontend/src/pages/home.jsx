@@ -1,6 +1,5 @@
 import Footer from '../components/Footer'
 import { useNavigate } from 'react-router-dom'
-import Navbar from '../components/Navbar'
 
 
 function Home() {
@@ -8,8 +7,6 @@ function Home() {
 
   return (
     <>
-      
-
       <main className="home">
         <section className="hero">
           <div className="hero-content">
@@ -24,7 +21,7 @@ function Home() {
 
             <div className="hero-actions">
               <button
-                className="btn primary"
+                className="btn-hero"
                 onClick={() => navigate('/login')}
               >
                 Iniciar sesión
