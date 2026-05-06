@@ -65,11 +65,18 @@ const login = (req, res, next) => {
     Usuario.obtenerUsuarioPorEmail(email, async (err, usuario) => {
       if (err) return next(err);
 
+      console.log("EMAIL RECIBIDO:", email);
+      console.log("USUARIO ENCONTRADO:", usuario ? "SI" : "NO");
+
       if (!usuario) {
         return res.status(401).json({
           message: "Credenciales inválidas",
         });
       }
+
+      console.log("EMAIL BD:", usuario.email);
+      console.log("ACTIVO:", usuario.activo);
+      console.log("HASH BD:", usuario.password_hash);
 
       if (usuario.activo === 0) {
         return res.status(401).json({
@@ -78,6 +85,8 @@ const login = (req, res, next) => {
       }
 
       const passwordValida = await bcrypt.compare(password, usuario.password_hash);
+
+      console.log("PASSWORD VALIDA:", passwordValida);
 
       if (!passwordValida) {
         return res.status(401).json({
@@ -113,7 +122,6 @@ const login = (req, res, next) => {
     next(error);
   }
 };
-
 
 module.exports = {
   register,

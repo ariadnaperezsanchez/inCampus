@@ -1,4 +1,5 @@
 require("dotenv").config();
+
 const express = require("express");
 const cors = require("cors");
 
@@ -8,7 +9,7 @@ const subjectRoutes = require("./routes/subjectRoutes");
 const userRoutes = require("./routes/userRoutes");
 const tutoriaRoutes = require("./routes/tutorialRoutes");
 const authRoutes = require("./routes/authRoutes");
-const documentRoutes = require("./routes/documentRoutes"); // 👈 AÑADIDO
+const documentRoutes = require("./routes/documentRoutes");
 
 // Middleware de errores
 const { errorHandler } = require("./middlewares/errorMiddleware");
@@ -19,17 +20,24 @@ require("./config/db");
 const app = express();
 
 // CORS
+const allowedOrigins = [
+  "http://localhost:5174",
+  "http://localhost:5175",
+  process.env.FRONTEND_URL,
+].filter(Boolean);
+
 app.use(
   cors({
-    origin: ["http://localhost:5174", "http://localhost:5175"],
+    origin: allowedOrigins,
+    credentials: true,
   })
 );
 
 // Middleware para JSON
 app.use(express.json());
 
-// 🔓 SERVIR ARCHIVOS (PDFs)
-app.use("/uploads", express.static("uploads")); // 👈 CLAVE
+// Servir archivos (PDFs)
+app.use("/uploads", express.static("uploads"));
 
 // Ruta base
 app.get("/", (req, res) => {
@@ -42,7 +50,7 @@ app.use("/eventos", eventRoutes);
 app.use("/subjects", subjectRoutes);
 app.use("/usuarios", userRoutes);
 app.use("/tutorias", tutoriaRoutes);
-app.use("/documentos", documentRoutes); // 👈 AÑADIDO
+app.use("/documentos", documentRoutes);
 
 // Middleware de errores
 app.use(errorHandler);
