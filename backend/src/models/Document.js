@@ -31,7 +31,17 @@ const getDocumentsBySubject = (id_asignatura, callback) => {
   db.query(sql, [id_asignatura], callback);
 };
 
+const deleteDocument = (id, callback) => {
+  const sql = `
+    DELETE FROM documento
+    WHERE id_documento = ?
+  `;
+
+  db.query(sql, [id], callback);
+};
+
 module.exports = {
   createDocument,
   getDocumentsBySubject,
+  deleteDocument,
 };

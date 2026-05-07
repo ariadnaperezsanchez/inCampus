@@ -36,7 +36,7 @@ router.get(
   tutoriaController.getReservadasProfesor
 );
 
-// POST crear disponibilidad (PROFESOR)
+// POST crear disponibilidad rol profesor
 router.post(
   "/",
   protect,
@@ -44,7 +44,7 @@ router.post(
   tutoriaController.createAvailability
 );
 
-// POST reservar tutoría (ALUMNO)
+// POST reservar tutoría rol alumno
 router.post(
   "/:id/reservar",
   protect,

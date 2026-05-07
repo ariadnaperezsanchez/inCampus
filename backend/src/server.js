@@ -1,4 +1,4 @@
-// Servidor principal de la aplicación. Configura y arranca el servidor Express.
+// Servidor principal de la aplicación. Configura y arranca el servidor Express!!
 require("dotenv").config();
 
 const app = require("./app");

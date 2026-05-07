@@ -1,60 +1,186 @@
 # InCampus
 
-InCampus es una plataforma académica web que permite a alumnos y profesores gestionar tutorías, eventos, documentos y actividad académica desde un único entorno.
+Plataforma web académica para la gestión de tutorías, eventos y documentos entre alumnado y profesorado.
 
-## 📚 Descripción
+---
 
-El objetivo del proyecto es facilitar la organización académica y la comunicación entre alumnado y profesorado mediante una interfaz sencilla e intuitiva.
+# Tecnologías utilizadas
 
-La plataforma permite consultar información relevante del curso, reservar tutorías, acceder a documentos compartidos y mantenerse al día con eventos y anuncios.
+## Frontend
+- React
+- React Router
+- Vite
+- JavaScript
+- CSS
 
-## 👥 Actores del sistema
+## Backend
+- Node.js
+- Express
+- JWT Authentication
+- Multer
+- bcrypt
 
-El sistema contempla dos tipos de usuarios principales:
+## Base de datos
+- MySQL
 
-- **Alumno**
-  - Reservar tutorías
-  - Ver eventos
-  - Inscribirse a eventos
-  - Ver documentos
-  - Consultar anuncios
+---
 
-- **Profesor**
-  - Crear disponibilidad de tutorías
-  - Gestionar reservas
-  - Crear anuncios
-  - Crear eventos
-  - Subir documentos
+# Funcionalidades principales
 
-## ⚙️ Funcionalidades principales
+## Alumnos
+- Iniciar sesión
+- Consultar eventos
+- Reservar tutorías
+- Cancelar reservas
+- Consultar documentos de asignaturas
+- Visualizar PDFs
 
-- Inicio de sesión de usuarios
-- Reserva y gestión de tutorías
-- Visualización de calendario de eventos
-- Publicación de anuncios
-- Gestión y consulta de documentos académicos
+## Profesores
+- Crear eventos
+- Eliminar sus propios eventos
+- Crear disponibilidades de tutorías
+- Cancelar disponibilidades
+- Subir documentos PDF
+- Eliminar documentos
 
-## 🖥️ Estructura de la plataforma
+---
 
-La aplicación incluye las siguientes páginas principales:
+# Sistema de autenticación
 
-- Landing page
-- Login
-- Recuperación de contraseña
-- Dashboard
-- Calendario
-- Asignaturas
+La aplicación utiliza:
+- JWT para autenticación
+- Roles:
+  - `ALUMNO`
+  - `PROFESOR`
 
-## 🛠️ Tecnologías utilizadas
+Las rutas protegidas requieren token válido.
 
-Este proyecto se ha desarrollado como parte de una práctica académica utilizando:
+---
 
-- Diseño de interfaces con **Figma**
-- Diagramas UML de **casos de uso**
-- Documentación de **requisitos funcionales**
+# Estructura del proyecto
 
-## 🎓 Proyecto académico
+```bash
+frontend/
+backend/
+```
 
-Este proyecto forma parte de la asignatura **PC01** y tiene como objetivo diseñar una plataforma web académica inspirada en sistemas como Moodle o Google Classroom.
+---
 
-**Creadores:** Laura, Guillem y Ariadna
+# Instalación
+
+## Clonar repositorio
+
+```bash
+git clone <URL_REPOSITORIO>
+```
+
+---
+
+# Configuración backend
+
+## Instalar dependencias
+
+```bash
+cd backend
+npm install
+```
+
+## Crear archivo `.env`
+
+```env
+PORT=3000
+
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=webuser
+DB_PASSWORD=web1234
+DB_NAME=gestion_academica
+
+JWT_SECRET=miclavesegura
+JWT_EXPIRES_IN=1h
+
+FRONTEND_URL=http://localhost:5173
+```
+
+## Ejecutar backend
+
+```bash
+npm run dev
+```
+
+---
+
+# Configuración frontend
+
+## Instalar dependencias
+
+```bash
+cd frontend
+npm install
+```
+
+## Crear archivo `.env`
+
+```env
+VITE_API_URL=http://localhost:3000
+```
+
+## Ejecutar frontend
+
+```bash
+npm run dev
+```
+
+---
+
+# Despliegue en máquina virtual
+
+Para producción:
+- Backend desplegado en VM Linux
+- Frontend conectado mediante `VITE_API_URL`
+- Base de datos MySQL externa
+- Configuración CORS habilitada
+
+Ejemplo:
+
+```env
+VITE_API_URL=http://34.57.35.197:3000
+```
+
+---
+
+# Subida de archivos
+
+Los documentos PDF se almacenan en:
+
+```bash
+uploads/documentos
+```
+
+Solo se permiten archivos `.pdf`.
+
+---
+
+# Seguridad implementada
+
+- Contraseñas encriptadas con bcrypt
+- Autenticación JWT
+- Middleware de protección de rutas
+- Restricción de permisos por rol
+- Los profesores solo pueden eliminar sus propios eventos
+
+---
+
+# Autores
+
+Proyecto desarrollado por:
+
+- Nombre integrante 1
+- Nombre integrante 2
+- Nombre integrante 3
+
+---
+
+# Estado del proyecto
+
+Proyecto funcional en desarrollo académico.

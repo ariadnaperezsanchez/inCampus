@@ -21,22 +21,17 @@ const app = express();
 
 // CORS
 const allowedOrigins = [
-  "http://localhost:5174",
-  "http://localhost:5175",
+  "http://34.57.35.197:5180",
+  "http://34.57.35.197:5180",
   process.env.FRONTEND_URL,
 ].filter(Boolean);
 
-app.use(
-  cors({
-    origin: allowedOrigins,
-    credentials: true,
-  })
-);
+app.use(cors());
 
 // Middleware para JSON
 app.use(express.json());
 
-// Servir archivos (PDFs)
+// Servir archivos pdfs temarios
 app.use("/uploads", express.static("uploads"));
 
 // Ruta base

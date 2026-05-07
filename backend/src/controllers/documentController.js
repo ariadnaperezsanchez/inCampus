@@ -1,3 +1,5 @@
+// controllers/documentController.js
+
 const Document = require("../models/Document");
 
 const uploadDocument = (req, res) => {
@@ -26,6 +28,7 @@ const uploadDocument = (req, res) => {
   Document.createDocument(documento, (err, result) => {
     if (err) {
       console.error("Error al guardar documento:", err);
+
       return res.status(500).json({
         message: "Error al guardar documento",
       });
@@ -47,6 +50,7 @@ const getDocumentsBySubject = (req, res) => {
   Document.getDocumentsBySubject(id_asignatura, (err, results) => {
     if (err) {
       console.error("Error al obtener documentos:", err);
+
       return res.status(500).json({
         message: "Error al obtener documentos",
       });
@@ -59,7 +63,26 @@ const getDocumentsBySubject = (req, res) => {
   });
 };
 
+const deleteDocument = (req, res) => {
+  const { id } = req.params;
+
+  Document.deleteDocument(id, (err, result) => {
+    if (err) {
+      console.error("Error al eliminar documento:", err);
+
+      return res.status(500).json({
+        message: "Error al eliminar documento",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Documento eliminado correctamente",
+    });
+  });
+};
+
 module.exports = {
   uploadDocument,
   getDocumentsBySubject,
+  deleteDocument,
 };

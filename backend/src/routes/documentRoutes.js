@@ -1,3 +1,5 @@
+// routes/documentRoutes.js
+
 const express = require("express");
 const multer = require("multer");
 const path = require("path");
@@ -5,14 +7,20 @@ const path = require("path");
 const router = express.Router();
 
 const documentController = require("../controllers/documentController");
-const { protect, authorize } = require("../middlewares/authMiddleware");
+
+const {
+  protect,
+  authorize,
+} = require("../middlewares/authMiddleware");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "uploads/documentos");
   },
+
   filename: (req, file, cb) => {
     const uniqueName = Date.now() + "-" + file.originalname;
+
     cb(null, uniqueName);
   },
 });
@@ -45,6 +53,14 @@ router.get(
   protect,
   authorize("ALUMNO", "PROFESOR"),
   documentController.getDocumentsBySubject
+);
+
+// Profesor elimina documento
+router.delete(
+  "/:id",
+  protect,
+  authorize("PROFESOR"),
+  documentController.deleteDocument
 );
 
 module.exports = router;

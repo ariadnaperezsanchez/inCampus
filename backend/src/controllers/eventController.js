@@ -30,7 +30,7 @@ const getEventById = (req, res) => {
 
 const createEvent = (req, res) => {
   const { titulo, descripcion, fecha, ubicacion } = req.body;
-  const id_profesor = req.user.id; // 👈 CLAVE
+  const id_profesor = req.user.id;
 
   if (!titulo || !fecha) {
     return res.status(400).json({
@@ -46,6 +46,7 @@ const createEvent = (req, res) => {
     id_profesor,
     (err, result) => {
       if (err) {
+        console.error(err);
         return res.status(500).json({ error: "Error al crear evento" });
       }
 
@@ -84,15 +85,18 @@ const updateEvent = (req, res) => {
 
 const deleteEvent = (req, res) => {
   const { id } = req.params;
+  const id_profesor = req.user.id;
 
-  eventModel.eliminarEvento(id, (err, result) => {
+  eventModel.eliminarEvento(id, id_profesor, (err, result) => {
     if (err) {
       console.error(err);
       return res.status(500).json({ error: "Error al eliminar el evento" });
     }
 
     if (result.affectedRows === 0) {
-      return res.status(404).json({ error: "Evento no encontrado" });
+      return res.status(403).json({
+        error: "No puedes eliminar un evento que no has creado",
+      });
     }
 
     res.json({ message: "Evento eliminado correctamente" });
