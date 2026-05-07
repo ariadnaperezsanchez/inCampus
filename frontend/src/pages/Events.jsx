@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import API_URL from "../api";
 
 function Events() {
   const [eventos, setEventos] = useState([]);
@@ -19,7 +20,7 @@ function Events() {
 
       const token = localStorage.getItem("token");
 
-      const res = await fetch("http://localhost:3000/eventos", {
+      const res = await fetch(`${API_URL}/eventos`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -28,7 +29,7 @@ function Events() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.message || "Error al cargar eventos");
+        setError(data.message || data.error || "Error al cargar eventos");
         return;
       }
 
@@ -52,7 +53,7 @@ function Events() {
     try {
       const token = localStorage.getItem("token");
 
-      const res = await fetch("http://localhost:3000/eventos", {
+      const res = await fetch(`${API_URL}/eventos`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -68,7 +69,7 @@ function Events() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.message || "Error al crear evento");
+        setError(data.message || data.error || "Error al crear evento");
         return;
       }
 
@@ -83,6 +84,35 @@ function Events() {
     }
   };
 
+  const eliminarEvento = async (idEvento) => {
+    const confirmar = window.confirm("¿Seguro que quieres eliminar este evento?");
+    if (!confirmar) return;
+
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await fetch(`${API_URL}/eventos/${idEvento}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.message || data.error || "Error al eliminar evento");
+        return;
+      }
+
+      alert("Evento eliminado correctamente");
+      await cargarEventos();
+    } catch (err) {
+      console.error(err);
+      alert("Error de conexión al eliminar evento");
+    }
+  };
+
   const formatearFecha = (fecha) => {
     if (!fecha) return "Sin fecha";
     return new Date(fecha).toLocaleString("es-ES");
@@ -90,8 +120,6 @@ function Events() {
 
   return (
     <>
-      
-
       <main className="events-page">
         <section className="events-hero">
           <span className="badge">Eventos</span>
@@ -107,7 +135,10 @@ function Events() {
         {error && <p style={{ color: "red", textAlign: "center" }}>{error}</p>}
 
         {rol === "PROFESOR" && (
-          <section className="event-detail" style={{ maxWidth: "850px", margin: "0 auto 40px" }}>
+          <section
+            className="event-detail"
+            style={{ maxWidth: "850px", margin: "0 auto 40px" }}
+          >
             <h2>Crear evento</h2>
 
             <form onSubmit={crearEvento} className="login-form">
@@ -146,15 +177,29 @@ function Events() {
             {eventos.length === 0 ? (
               <p>No hay eventos disponibles</p>
             ) : (
-              eventos.map((evento) => (
-                <article className="tutoria-card" key={evento.id_evento || evento.id}>
-                  <h2>{evento.titulo}</h2>
-                  <p>{evento.descripcion}</p>
-                  <p>
-                    <strong>Fecha:</strong> {formatearFecha(evento.fecha)}
-                  </p>
-                </article>
-              ))
+              eventos.map((evento) => {
+                const idEvento = evento.id_evento || evento.id;
+
+                return (
+                  <article className="tutoria-card" key={idEvento}>
+                    <h2>{evento.titulo}</h2>
+                    <p>{evento.descripcion}</p>
+                    <p>
+                      <strong>Fecha:</strong> {formatearFecha(evento.fecha)}
+                    </p>
+
+                    {rol === "PROFESOR" && (
+                      <button
+                        className="btn secondary"
+                        type="button"
+                        onClick={() => eliminarEvento(idEvento)}
+                      >
+                        Eliminar evento
+                      </button>
+                    )}
+                  </article>
+                );
+              })
             )}
           </section>
         )}

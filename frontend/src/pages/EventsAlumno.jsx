@@ -1,47 +1,48 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react";
+import API_URL from "../api";
 
 function EventsAlumno() {
-  const [eventos, setEventos] = useState([])
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(true)
+  const [eventos, setEventos] = useState([]);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const cargarEventos = async () => {
       try {
-        const token = localStorage.getItem('token')
+        const token = localStorage.getItem("token");
 
-        const res = await fetch('http://localhost:3000/eventos', {
+        const res = await fetch(`${API_URL}/eventos`, {
           headers: {
-            Authorization: `Bearer ${token}`
-          }
-        })
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-        const data = await res.json()
+        const data = await res.json();
 
         if (!res.ok) {
-          setError(data.message || 'Error al cargar eventos')
-          return
+          setError(data.message || "Error al cargar eventos");
+          return;
         }
 
-        setEventos(data)
+        setEventos(data);
       } catch (err) {
-        console.error(err)
-        setError('No se pudo conectar con el servidor')
+        console.error(err);
+        setError("No se pudo conectar con el servidor");
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    cargarEventos()
-  }, [])
+    cargarEventos();
+  }, []);
 
-  if (loading) return <p>Cargando eventos...</p>
+  if (loading) return <p>Cargando eventos...</p>;
 
   return (
     <main>
       <h1>Eventos</h1>
 
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
 
       {eventos.length === 0 ? (
         <p>No hay eventos disponibles</p>
@@ -59,7 +60,7 @@ function EventsAlumno() {
         </ul>
       )}
     </main>
-  )
+  );
 }
 
-export default EventsAlumno
+export default EventsAlumno;

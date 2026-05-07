@@ -1,49 +1,51 @@
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import API_URL from "../api";
 
 function Login() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const navigate = useNavigate()
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setError('')
+    e.preventDefault();
+    setError("");
 
     try {
-      const res = await fetch('http://localhost:3000/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      })
+      const res = await fetch(`${API_URL}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-      const data = await res.json()
+      const data = await res.json();
 
       if (!res.ok) {
-        setError(data.message || 'Error al iniciar sesión')
-        return
+        setError(data.message || "Error al iniciar sesión");
+        return;
       }
 
-      // 🔥 IMPORTANTE
-      localStorage.setItem('token', data.token)
-      localStorage.setItem('usuario', JSON.stringify(data.user))
-      localStorage.setItem('rol', data.user.rol)
+      // IMPORTANTE
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("usuario", JSON.stringify(data.user));
+      localStorage.setItem("rol", data.user.rol);
 
-      navigate('/dashboard')
-
+      navigate("/dashboard");
     } catch (err) {
-      console.error(err)
-      setError('No se pudo conectar con el servidor')
+      console.error(err);
+      setError("No se pudo conectar con el servidor");
     }
-  }
+  };
 
   return (
     <main className="login-page">
       <section className="login-card">
         <h1>Iniciar sesión</h1>
 
-        <p>Accede a tu cuenta para gestionar tutorías, eventos y documentos.</p>
+        <p>
+          Accede a tu cuenta para gestionar tutorías, eventos y documentos.
+        </p>
 
         <form onSubmit={handleSubmit} className="login-form">
           <input
@@ -66,7 +68,7 @@ function Login() {
         </form>
 
         {error && (
-          <p style={{ color: 'red', marginTop: '10px' }}>
+          <p style={{ color: "red", marginTop: "10px" }}>
             {error}
           </p>
         )}
@@ -76,7 +78,7 @@ function Login() {
         </Link>
       </section>
     </main>
-  )
+  );
 }
 
-export default Login
+export default Login;

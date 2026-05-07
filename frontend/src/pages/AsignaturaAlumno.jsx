@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import API_URL from "../api";
 
 function AsignaturaAlumno() {
   const [asignaturas, setAsignaturas] = useState([]);
@@ -13,14 +14,11 @@ function AsignaturaAlumno() {
     try {
       const token = localStorage.getItem("token");
 
-      const res = await fetch(
-        `http://localhost:3000/documentos/asignatura/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await fetch(`${API_URL}/documentos/asignatura/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       const data = await res.json();
 
@@ -41,7 +39,7 @@ function AsignaturaAlumno() {
       setLoading(true);
       setError("");
 
-      const res = await fetch("http://localhost:3000/subjects");
+      const res = await fetch(`${API_URL}/subjects`);
       const data = await res.json();
 
       setAsignaturas(data);
@@ -71,8 +69,6 @@ function AsignaturaAlumno() {
 
   return (
     <>
-      
-
       <main className="asignatura-page">
         <section className="asignatura-header">
           <span>Asignaturas</span>
@@ -125,7 +121,7 @@ function AsignaturaAlumno() {
 
                       <a
                         className="doc-link"
-                        href={`http://localhost:3000/${doc.url_archivo}`}
+                        href={`${API_URL}/${doc.url_archivo}`}
                         target="_blank"
                         rel="noreferrer"
                       >

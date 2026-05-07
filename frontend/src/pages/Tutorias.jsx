@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import API_URL from "../api";
 
 function Tutorias() {
   const [disponibles, setDisponibles] = useState([]);
@@ -34,7 +35,7 @@ function Tutorias() {
       setError("");
 
       if (rol === "PROFESOR") {
-        const res = await fetchAuth("http://localhost:3000/tutorias");
+        const res = await fetchAuth(`${API_URL}/tutorias`);
         const data = await res.json();
 
         if (!res.ok) {
@@ -47,8 +48,8 @@ function Tutorias() {
 
       if (rol === "ALUMNO") {
         const [resDisponibles, resReservas] = await Promise.all([
-          fetchAuth("http://localhost:3000/tutorias/disponibles"),
-          fetchAuth("http://localhost:3000/tutorias/mis-reservas"),
+          fetchAuth(`${API_URL}/tutorias/disponibles`),
+          fetchAuth(`${API_URL}/tutorias/mis-reservas`),
         ]);
 
         const dataDisponibles = await resDisponibles.json();
@@ -83,7 +84,7 @@ function Tutorias() {
     e.preventDefault();
 
     try {
-      const res = await fetchAuth("http://localhost:3000/tutorias", {
+      const res = await fetchAuth(`${API_URL}/tutorias`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -115,7 +116,7 @@ function Tutorias() {
 
   const reservarTutoria = async (id) => {
     try {
-      const res = await fetchAuth(`http://localhost:3000/tutorias/${id}/reservar`, {
+      const res = await fetchAuth(`${API_URL}/tutorias/${id}/reservar`, {
         method: "POST",
       });
 
@@ -135,7 +136,7 @@ function Tutorias() {
 
   const cancelarReserva = async (id) => {
     try {
-      const res = await fetchAuth(`http://localhost:3000/tutorias/${id}/cancelar`, {
+      const res = await fetchAuth(`${API_URL}/tutorias/${id}/cancelar`, {
         method: "PUT",
       });
 
@@ -156,7 +157,7 @@ function Tutorias() {
   const cancelarDisponibilidad = async (id) => {
     try {
       const res = await fetchAuth(
-        `http://localhost:3000/tutorias/${id}/cancelar-disponibilidad`,
+        `${API_URL}/tutorias/${id}/cancelar-disponibilidad`,
         {
           method: "PUT",
         }
@@ -183,8 +184,6 @@ function Tutorias() {
 
   return (
     <>
-      
-
       <main className="tutorias-page">
         <section className="tutorias-hero">
           <span className="badge">Tutorías académicas</span>

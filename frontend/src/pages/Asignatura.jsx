@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Footer from "../components/Footer";
+import API_URL from "../api";
 
 function Asignatura() {
   const [asignaturas, setAsignaturas] = useState([]);
@@ -12,7 +13,7 @@ function Asignatura() {
   const rol = localStorage.getItem("rol");
 
   const cargarAsignaturas = async () => {
-    const res = await fetch("http://localhost:3000/subjects");
+    const res = await fetch(`${API_URL}/subjects`);
     const data = await res.json();
 
     setAsignaturas(data);
@@ -27,7 +28,7 @@ function Asignatura() {
   const cargarDocumentos = async (id) => {
     const token = localStorage.getItem("token");
 
-    const res = await fetch(`http://localhost:3000/documentos/asignatura/${id}`, {
+    const res = await fetch(`${API_URL}/documentos/asignatura/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -58,7 +59,7 @@ function Asignatura() {
     formData.append("id_asignatura", idAsignatura);
     formData.append("archivo", archivo);
 
-    const res = await fetch("http://localhost:3000/documentos", {
+    const res = await fetch(`${API_URL}/documentos`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -80,35 +81,35 @@ function Asignatura() {
   };
 
   const eliminarDocumento = async (idDocumento) => {
-  const confirmar = window.confirm("¿Seguro que quieres eliminar este documento?");
-  if (!confirmar) return;
+    const confirmar = window.confirm("¿Seguro que quieres eliminar este documento?");
+    if (!confirmar) return;
 
-  try {
-    const token = localStorage.getItem("token");
+    try {
+      const token = localStorage.getItem("token");
 
-    const res = await fetch(`http://localhost:3000/documentos/${idDocumento}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+      const res = await fetch(`${API_URL}/documentos/${idDocumento}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    console.log("DELETE DOCUMENTO:", res.status, data);
+      console.log("DELETE DOCUMENTO:", res.status, data);
 
-    if (!res.ok) {
-      alert(data.message || "Error al eliminar documento");
-      return;
+      if (!res.ok) {
+        alert(data.message || "Error al eliminar documento");
+        return;
+      }
+
+      alert("Documento eliminado correctamente");
+      await cargarDocumentos(idAsignatura);
+    } catch (err) {
+      console.error(err);
+      alert("Error de conexión al eliminar");
     }
-
-    alert("Documento eliminado correctamente");
-    await cargarDocumentos(idAsignatura);
-  } catch (err) {
-    console.error(err);
-    alert("Error de conexión al eliminar");
-  }
-};
+  };
 
   return (
     <>
@@ -192,7 +193,7 @@ function Asignatura() {
                   <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
                     <a
                       className="doc-link"
-                      href={`http://localhost:3000/${doc.url_archivo}`}
+                      href={`${API_URL}/${doc.url_archivo}`}
                       target="_blank"
                       rel="noreferrer"
                     >
