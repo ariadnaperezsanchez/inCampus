@@ -359,6 +359,10 @@
   background: rgba(255, 255, 255, 0.45);
 }
 
+.tutorias-dispo {
+  text-align: center;
+}
+
 /*Asignaturas form*/
 .student-info {
   display: grid;

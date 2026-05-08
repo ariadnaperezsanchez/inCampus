@@ -291,7 +291,9 @@ function Tutorias() {
 
         {!loading && !error && rol === "ALUMNO" && (
           <>
-            <h2>Disponibilidades disponibles</h2>
+            <section className="tutorias-dispo">
+            <h2>Tutorías disponibles:</h2>
+            </section>
 
             <section className="tutorias-grid">
               {disponibles.length === 0 ? (
@@ -323,8 +325,9 @@ function Tutorias() {
                 ))
               )}
             </section>
-
+            <section className="tutorias-dispo">
             <h2>Mis tutorías reservadas</h2>
+            </section>
 
             <section className="tutorias-grid">
               {misReservas.length === 0 ? (
