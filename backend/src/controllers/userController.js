@@ -1,5 +1,5 @@
 const userModel = require("../models/User");
-
+// controlador para obtener todos los usuarios, solo para profesores
 const getUsuarios = (req, res) => {
   userModel.obtenerUsuarios((err, results) => {
     if (err) {

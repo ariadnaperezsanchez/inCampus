@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const Usuario = require("../models/User");
 
+// Controlador para el registro de usuarios
 const register = async (req, res, next) => {
   try {
     const { nombre, apellido1, apellido2, email, password, rol, activo } = req.body;
@@ -17,7 +18,7 @@ const register = async (req, res, next) => {
         message: "Rol no válido",
       });
     }
-
+// Verificar si el usuario ya existe por email
     Usuario.obtenerUsuarioPorEmail(email, async (err, usuarioExistente) => {
       if (err) return next(err);
 
@@ -27,7 +28,8 @@ const register = async (req, res, next) => {
         });
       }
 
-      const password_hash = await bcrypt.hash(password, 10);
+// Hash de la contraseña antes de guardar el usuario
+      const password_hash = await bcrypt.hash(password, 10); 
 
       Usuario.crearUsuario(
         nombre,
@@ -52,6 +54,7 @@ const register = async (req, res, next) => {
   }
 };
 
+// controller para el login de usuarios
 const login = (req, res, next) => {
   try {
     const { email, password } = req.body;
@@ -61,7 +64,7 @@ const login = (req, res, next) => {
         message: "Email y contraseña son obligatorios",
       });
     }
-
+// Buscar el usuario por email para verificar credenciales
     Usuario.obtenerUsuarioPorEmail(email, async (err, usuario) => {
       if (err) return next(err);
 
@@ -84,6 +87,7 @@ const login = (req, res, next) => {
         });
       }
 
+// Comparar la contraseña recibida con el hash almacenado en la base de datos
       const passwordValida = await bcrypt.compare(password, usuario.password_hash);
 
       console.log("PASSWORD VALIDA:", passwordValida);
@@ -93,7 +97,7 @@ const login = (req, res, next) => {
           message: "Credenciales inválidas",
         });
       }
-
+// si son validas, generar un token jwt con la info del usuario y devolverla en respuesta para el frontend
       const token = jwt.sign(
         {
           id: usuario.id_usuario,

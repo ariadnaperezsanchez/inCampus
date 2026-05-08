@@ -1,5 +1,6 @@
 const db = require("../config/db");
 
+// Función para obtener todas las asignaturas disponibles en la base de datos
 const obtenerSubjects = (callback) => {
     const sql = "SELECT * FROM asignatura";
 

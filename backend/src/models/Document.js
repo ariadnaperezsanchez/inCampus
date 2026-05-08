@@ -1,5 +1,6 @@
 const db = require("../config/db");
 
+// Función para crear un nuevo documento
 const createDocument = (documento, callback) => {
   const sql = `
     INSERT INTO documento 
@@ -7,6 +8,7 @@ const createDocument = (documento, callback) => {
     VALUES (?, ?, ?, ?, ?)
   `;
 
+// Ejecutar la consulta SQL para insertar un nuevo documento en la base de datos
   db.query(
     sql,
     [
@@ -20,6 +22,7 @@ const createDocument = (documento, callback) => {
   );
 };
 
+// Función para obtener los documentos de una asignatura específica, ordenados por fecha de subida (más recientes primero)
 const getDocumentsBySubject = (id_asignatura, callback) => {
   const sql = `
     SELECT *
@@ -31,6 +34,7 @@ const getDocumentsBySubject = (id_asignatura, callback) => {
   db.query(sql, [id_asignatura], callback);
 };
 
+// Función para eliminar un documento por su ID
 const deleteDocument = (id, callback) => {
   const sql = `
     DELETE FROM documento

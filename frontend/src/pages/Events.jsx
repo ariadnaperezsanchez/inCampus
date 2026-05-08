@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import API_URL from "../api";
 
+// función para mostrar eventos académicos, con opción de crear y eliminar eventos para profesores y solo consulta para alumnos
 function Events() {
   const [eventos, setEventos] = useState([]);
   const [titulo, setTitulo] = useState("");
@@ -13,6 +14,7 @@ function Events() {
 
   const rol = localStorage.getItem("rol");
 
+// función para cargar eventos 
   const cargarEventos = async () => {
     try {
       setLoading(true);
@@ -42,6 +44,7 @@ function Events() {
     }
   };
 
+// cargar eventos al montar el componente
   useEffect(() => {
     cargarEventos();
   }, []);
@@ -50,6 +53,7 @@ function Events() {
     e.preventDefault();
     setError("");
 
+// validar campos del formulario
     try {
       const token = localStorage.getItem("token");
 
@@ -84,6 +88,7 @@ function Events() {
     }
   };
 
+// función para eliminar evento
   const eliminarEvento = async (idEvento) => {
     const confirmar = window.confirm("¿Seguro que quieres eliminar este evento?");
     if (!confirmar) return;
@@ -113,12 +118,16 @@ function Events() {
     }
   };
 
+
+// función para formatear fecha a formato legible en español
   const formatearFecha = (fecha) => {
     if (!fecha) return "Sin fecha";
     return new Date(fecha).toLocaleString("es-ES");
   };
 
-  return (
+  return ( 
+    
+    // renderizar pagina eventos con formulario 
     <>
       <main className="events-page">
         <section className="events-hero">

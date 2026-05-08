@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import API_URL from "../api";
 
+// function AsignaturaAlumno 
 function AsignaturaAlumno() {
   const [asignaturas, setAsignaturas] = useState([]);
   const [documentos, setDocumentos] = useState([]);
@@ -10,13 +11,14 @@ function AsignaturaAlumno() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
 
+// Función para cargar documentos de una asignatura
   const cargarDocumentos = async (id) => {
     try {
       const token = localStorage.getItem("token");
 
       const res = await fetch(`${API_URL}/documentos/asignatura/${id}`, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${token}`, // token para autenticación
         },
       });
 
@@ -34,6 +36,7 @@ function AsignaturaAlumno() {
     }
   };
 
+// Función para cargar asignaturas del alumno
   const cargarAsignaturas = async () => {
     try {
       setLoading(true);
@@ -57,6 +60,7 @@ function AsignaturaAlumno() {
     }
   };
 
+// Cargar asignaturas al montar el componente
   useEffect(() => {
     cargarAsignaturas();
   }, []);
@@ -68,6 +72,8 @@ function AsignaturaAlumno() {
   };
 
   return (
+
+// Renderizado de la página de asignaturas para el alumno
     <>
       <main className="asignatura-page">
         <section className="asignatura-header">

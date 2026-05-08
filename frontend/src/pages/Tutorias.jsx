@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import API_URL from "../api";
 
+// funcion para mostrar tutorias d
 function Tutorias() {
   const [disponibles, setDisponibles] = useState([]);
   const [misReservas, setMisReservas] = useState([]);
@@ -15,8 +16,9 @@ function Tutorias() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const rol = localStorage.getItem("rol");
+  const rol = localStorage.getItem("rol"); // "ALUMNO" o "PROFESOR"
 
+// función para hacer fetch con autenticación
   const fetchAuth = async (url, options = {}) => {
     const token = localStorage.getItem("token");
 
@@ -28,6 +30,7 @@ function Tutorias() {
       },
     });
   };
+
 
   const cargarDatos = async () => {
     try {
@@ -76,6 +79,7 @@ function Tutorias() {
     }
   };
 
+// cargar datos al montar el componente
   useEffect(() => {
     cargarDatos();
   }, []);
@@ -113,7 +117,7 @@ function Tutorias() {
       alert("No se pudo conectar con el servidor");
     }
   };
-
+  // funciones para reservar, cancelar reserva y cancelar disponibilidad
   const reservarTutoria = async (id) => {
     try {
       const res = await fetchAuth(`${API_URL}/tutorias/${id}/reservar`, {
@@ -126,7 +130,7 @@ function Tutorias() {
         alert(data.message || "Error al reservar tutoría");
         return;
       }
-
+      // recargar datos para actualizar la lista de tutorías disponibles y mis reservas
       await cargarDatos();
     } catch (err) {
       console.error(err);
@@ -147,13 +151,14 @@ function Tutorias() {
         return;
       }
 
-      await cargarDatos();
+      await cargarDatos(); // recargar datos para mostrar la tutoria dispo
     } catch (err) {
       console.error(err);
       alert("No se pudo conectar con el servidor");
     }
   };
 
+  // P - cancelar disponibilidad
   const cancelarDisponibilidad = async (id) => {
     try {
       const res = await fetchAuth(
@@ -179,7 +184,7 @@ function Tutorias() {
 
   const formatearFecha = (fecha) => {
     if (!fecha) return "Sin fecha";
-    return new Date(fecha).toLocaleString("es-ES");
+    return new Date(fecha).toLocaleString("es-ES"); // formatear fecha a formato en español
   };
 
   return (

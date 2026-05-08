@@ -2,11 +2,13 @@ import dashboardImg from "../assets/dashboard1.jpg";
 import Footer from "../components/Footer";
 import { Link } from "react-router-dom";
 
+// función para mostrar el dashboard con opciones de tutorías, eventos y asignaturas, adaptado según el rol del usuario
 function Dashboard() {
   const usuarioGuardado = localStorage.getItem("usuario");
   const usuario = usuarioGuardado ? JSON.parse(usuarioGuardado) : {};
 
   return (
+// renderizar el dashboard con un mensaje de bienvenida y enlaces a las secciones de tutorías, eventos y asignaturas, mostrando opciones según el rol del usuario (profesor o alumno)
     <>
       <main className="dashboard-page">
         <section className="dashboard-header">

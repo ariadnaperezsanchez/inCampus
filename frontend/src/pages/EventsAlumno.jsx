@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import API_URL from "../api";
 
+// función para mostrar eventos
 function EventsAlumno() {
   const [eventos, setEventos] = useState([]);
   const [error, setError] = useState("");
@@ -39,6 +40,7 @@ function EventsAlumno() {
   if (loading) return <p>Cargando eventos...</p>;
 
   return (
+  // renderizado pagina eventos
     <main>
       <h1>Eventos</h1>
 

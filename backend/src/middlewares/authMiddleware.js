@@ -1,9 +1,10 @@
 const jwt = require("jsonwebtoken");
 const Usuario = require("../models/User");
 
+// middleware para proteger rutas y verificar el token JWT
 const protect = (req, res, next) => {
   let token;
-
+// Verificar si el token está presente en el header Authorization
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith("Bearer ")
@@ -46,6 +47,7 @@ const protect = (req, res, next) => {
   }
 };
 
+// middleware para verificar que el usuario tiene el rol permitido para acceder a la ruta
 const authorize = (...rolesPermitidos) => {
   return (req, res, next) => {
     if (!req.user) {

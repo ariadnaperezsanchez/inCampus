@@ -26,7 +26,7 @@ function Login() {
         return;
       }
 
-      // IMPORTANTE
+      // almacenar token, usuario y rol en localStorage para autenticación y autorización
       localStorage.setItem("token", data.token);
       localStorage.setItem("usuario", JSON.stringify(data.user));
       localStorage.setItem("rol", data.user.rol);

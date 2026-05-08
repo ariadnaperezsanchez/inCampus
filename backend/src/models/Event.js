@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import API_URL from "../api";
 
+// función para mostrar eventos académicos, con opción de crear y eliminar eventos para profesores y solo consulta para alumnos
 function Events() {
   const [eventos, setEventos] = useState([]);
   const [titulo, setTitulo] = useState("");
@@ -14,11 +15,13 @@ function Events() {
   const rol = localStorage.getItem("rol");
   const usuario = JSON.parse(localStorage.getItem("usuario") || "{}");
 
+// función para cargar eventos
   const cargarEventos = async () => {
     try {
       setLoading(true);
       setError("");
 
+// obtener token para autenticación
       const token = localStorage.getItem("token");
 
       const res = await fetch(`${API_URL}/eventos`, {
@@ -26,7 +29,7 @@ function Events() {
           Authorization: `Bearer ${token}`,
         },
       });
-
+// obtener datos de la respuesta y manejar errores
       const data = await res.json();
 
       if (!res.ok) {
@@ -42,11 +45,12 @@ function Events() {
       setLoading(false);
     }
   };
-
+// cargar eventos al montar el componente
   useEffect(() => {
     cargarEventos();
   }, []);
 
+// función para crear evento, solo disponible para profesores, con validación de campos y manejo de errores
   const crearEvento = async (e) => {
     e.preventDefault();
     setError("");
@@ -54,6 +58,7 @@ function Events() {
     try {
       const token = localStorage.getItem("token");
 
+// enviar datos del nuevo evento al backend para crear el evento, con manejo de errores
       const res = await fetch(`${API_URL}/eventos`, {
         method: "POST",
         headers: {
@@ -67,6 +72,7 @@ function Events() {
         }),
       });
 
+// obtener datos de la respuesta y manejar errores
       const data = await res.json();
 
       if (!res.ok) {
@@ -85,6 +91,7 @@ function Events() {
     }
   };
 
+// función para eliminar evento, solo disponible para profesores, con confirmación antes de eliminar y manejo de errores
   const eliminarEvento = async (idEvento) => {
     const confirmar = window.confirm(
       "¿Seguro que quieres eliminar este evento?"
@@ -92,6 +99,7 @@ function Events() {
 
     if (!confirmar) return;
 
+  // obtener token para autenticación y enviar solicitud al backend para eliminar el evento, con manejo de errores
     try {
       const token = localStorage.getItem("token");
 
@@ -117,7 +125,8 @@ function Events() {
       alert("Error de conexión al eliminar evento");
     }
   };
-
+  
+// función para formatear la fecha de los eventos en formato legible, con manejo de casos sin fecha
   const formatearFecha = (fecha) => {
     if (!fecha) return "Sin fecha";
 

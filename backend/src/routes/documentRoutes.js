@@ -1,5 +1,3 @@
-// routes/documentRoutes.js
-
 const express = require("express");
 const multer = require("multer");
 const path = require("path");
@@ -8,11 +6,13 @@ const router = express.Router();
 
 const documentController = require("../controllers/documentController");
 
+// middlewares para proteger rutas y autorizar por roles
 const {
   protect,
   authorize,
 } = require("../middlewares/authMiddleware");
 
+// configuración de multer para subir archivos PDF
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "uploads/documentos");
@@ -25,6 +25,7 @@ const storage = multer.diskStorage({
   },
 });
 
+// filtro para aceptar solo archivos PDF
 const fileFilter = (req, file, cb) => {
   if (file.mimetype === "application/pdf") {
     cb(null, true);

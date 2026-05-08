@@ -1,7 +1,8 @@
 const tutoriaModel = require("../models/Tutorial");
-
+// función para obtener el id del usuario, compatible con ambos formatos de token
 const getUserId = (req) => req.user.id || req.user.id_usuario;
 
+// controladores para tutorías, con lógica para profesores y alumnos según el rol del usuario
 const getTutorias = (req, res) => {
   const userId = getUserId(req);
 
@@ -21,6 +22,7 @@ const getTutorias = (req, res) => {
     });
   }
 
+// si es alumno, se obtienen todas las tutorías para mostrar disponibilidad y reservas
   tutoriaModel.getAllTutorias((err, results) => {
     if (err) {
       console.error("Error al obtener tutorías:", err);
@@ -36,6 +38,7 @@ const getTutorias = (req, res) => {
   });
 };
 
+// función para obtener solo las tutorías disponibles para reservar, usada en la página de reservas del alumno
 const getAvailableTutorias = (req, res) => {
   tutoriaModel.getAvailableTutorias((err, results) => {
     if (err) {
@@ -52,6 +55,7 @@ const getAvailableTutorias = (req, res) => {
   });
 };
 
+// función para obtener las reservas del alumno, usada en la página de mis reservas del alumno
 const getMyReservations = (req, res) => {
   const id_alumno = getUserId(req);
 
@@ -70,6 +74,7 @@ const getMyReservations = (req, res) => {
   });
 };
 
+// función para reservar tutoria
 const reservar = (req, res) => {
   const id = req.params.id;
   const id_alumno = getUserId(req);
@@ -87,6 +92,8 @@ const reservar = (req, res) => {
       });
     }
 
+
+// validar que la tutoria esté disponible antes de reservar, para evitar conflictos si varios alumnos intentan reservar al mismo tiempo
     const tutoria = results[0];
 
     if (tutoria.estado_slot !== "DISPONIBLE") {
@@ -109,6 +116,7 @@ const reservar = (req, res) => {
   });
 };
 
+// función para cancelar la reserva
 const cancelReservation = (req, res) => {
   const id = req.params.id;
   const id_alumno = getUserId(req);
@@ -126,6 +134,7 @@ const cancelReservation = (req, res) => {
       });
     }
 
+  // validar que la tutoria esté reservada por el alumno que intenta cancelar
     const tutoria = results[0];
 
     if (Number(tutoria.id_alumno) !== Number(id_alumno)) {
@@ -148,6 +157,7 @@ const cancelReservation = (req, res) => {
   });
 };
 
+// función para crear disponibilidad, solo para P validando campos obligatorios y manejando errores
 const createAvailability = (req, res) => {
   const { fecha_inicio, fecha_fin, ubicacion } = req.body;
   const id_profesor = getUserId(req);
@@ -158,6 +168,7 @@ const createAvailability = (req, res) => {
     });
   }
 
+// validar que fecha_inicio sea anterior a fecha_fin
   tutoriaModel.createAvailability(
     fecha_inicio,
     fecha_fin,
@@ -178,7 +189,7 @@ const createAvailability = (req, res) => {
     }
   );
 };
-
+// función para obtener las tutorías reservadas del profesor, usada en la página de mis reservas del profesor
 const getReservadasProfesor = (req, res) => {
   const id_profesor = getUserId(req);
 
@@ -197,6 +208,7 @@ const getReservadasProfesor = (req, res) => {
   });
 };
 
+// función para cancelar dispo
 const cancelAvailability = (req, res) => {
   const id = req.params.id;
   const id_profesor = getUserId(req);
@@ -214,6 +226,7 @@ const cancelAvailability = (req, res) => {
       });
     }
 
+
     const tutoria = results[0];
 
     if (Number(tutoria.id_profesor) !== Number(id_profesor)) {
@@ -227,7 +240,8 @@ const cancelAvailability = (req, res) => {
         message: "No puedes cancelar una disponibilidad ya reservada",
       });
     }
-
+    
+// validar que la tutoria no este reservada antes de cancelar
     tutoriaModel.cancelAvailability(id, (err) => {
       if (err) {
         return res.status(500).json({

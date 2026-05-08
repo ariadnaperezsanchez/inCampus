@@ -1,5 +1,6 @@
 const subjectModel = require("../models/Subject");
 
+// controlador para obtener todas las asignaturas, disponible para alumnos y profesores
 const getSubjects = (req, res) => {
   subjectModel.obtenerSubjects((err, results) => {
     if (err) {

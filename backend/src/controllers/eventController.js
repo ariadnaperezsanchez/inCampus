@@ -1,5 +1,6 @@
 const eventModel = require("../models/Event");
 
+// controladores para eventos
 const getEvents = (req, res) => {
   eventModel.obtenerEventos((err, results) => {
     if (err) {
@@ -11,6 +12,7 @@ const getEvents = (req, res) => {
   });
 };
 
+// obtener evento por id
 const getEventById = (req, res) => {
   const { id } = req.params;
 
@@ -28,6 +30,7 @@ const getEventById = (req, res) => {
   });
 };
 
+// crear evento solo para profesores
 const createEvent = (req, res) => {
   const { titulo, descripcion, fecha, ubicacion } = req.body;
   const id_profesor = req.user.id;
@@ -58,6 +61,7 @@ const createEvent = (req, res) => {
   );
 };
 
+// actualizar evento solo para el profesor que lo creó
 const updateEvent = (req, res) => {
   const { id } = req.params;
   const { titulo, descripcion, fecha, ubicacion } = req.body;
@@ -83,6 +87,7 @@ const updateEvent = (req, res) => {
   );
 };
 
+// eliminar evento solo para el profesor que lo creó
 const deleteEvent = (req, res) => {
   const { id } = req.params;
   const id_profesor = req.user.id;

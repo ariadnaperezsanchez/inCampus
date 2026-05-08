@@ -1,10 +1,11 @@
 import Footer from '../components/Footer'
 import { useNavigate } from 'react-router-dom'
 
-
+// función para mostrar inicio/home
 function Home() {
   const navigate = useNavigate()
-
+  
+// renderizar la pagina de inicio
   return (
     <>
       <main className="home">

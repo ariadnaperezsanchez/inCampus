@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import API_URL from "../api";
 
+// función para mostrar asignaturas y documentos, con opción de subir PDF para profesores
 function Asignatura() {
   const [asignaturas, setAsignaturas] = useState([]);
   const [idAsignatura, setIdAsignatura] = useState("");
@@ -10,12 +11,13 @@ function Asignatura() {
   const [documentos, setDocumentos] = useState([]);
   const [error, setError] = useState("");
 
-  const rol = localStorage.getItem("rol");
+  const rol = localStorage.getItem("rol"); // obtener rol del usuario para mostrar opciones según sea alumno o profesor
 
   const cargarAsignaturas = async () => {
     const res = await fetch(`${API_URL}/subjects`);
     const data = await res.json();
 
+// si la respuesta no es ok, mostrar error
     setAsignaturas(data);
 
     if (data.length > 0) {
@@ -25,6 +27,7 @@ function Asignatura() {
     }
   };
 
+// función para cargar documentos de una asignatura específica
   const cargarDocumentos = async (id) => {
     const token = localStorage.getItem("token");
 
@@ -34,10 +37,11 @@ function Asignatura() {
       },
     });
 
-    const data = await res.json();
+    const data = await res.json(); 
     setDocumentos(data.data || data);
   };
 
+// cargar asignaturas al montar el componente
   useEffect(() => {
     cargarAsignaturas();
   }, []);
@@ -51,8 +55,9 @@ function Asignatura() {
       return;
     }
 
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token"); // obtener token para autenticación
 
+// crear FormData para enviar el archivo y los datos del documento al backend
     const formData = new FormData();
     formData.append("titulo", titulo || archivo.name);
     formData.append("tipo", "PDF");
@@ -80,6 +85,7 @@ function Asignatura() {
     await cargarDocumentos(idAsignatura);
   };
 
+// función para eliminar un documento, solo disponible para profesores
   const eliminarDocumento = async (idDocumento) => {
     const confirmar = window.confirm("¿Seguro que quieres eliminar este documento?");
     if (!confirmar) return;
@@ -112,6 +118,7 @@ function Asignatura() {
   };
 
   return (
+  // estructura de la página con secciones para mostrar asignaturas, subir documentos y listar documentos disponibles, con opciones según el rol del usuario
     <>
       <main className="asignatura-page">
         <section className="asignatura-header">

@@ -1,5 +1,6 @@
 const db = require("../config/db");
 
+// Función para obtener todas las tutorías, incluyendo el nombre del profesor y del alumno (si hay reserva)
 const getAllTutorias = (callback) => {
   const sql = `
     SELECT 
@@ -21,6 +22,7 @@ const getAllTutorias = (callback) => {
   db.query(sql, callback);
 };
 
+// Función para obtener las tutorías de un profesor específico, incluyendo el nombre del alumno (si hay reserva)
 const getTutoriasByProfesor = (id_profesor, callback) => {
   const sql = `
     SELECT 
@@ -41,6 +43,7 @@ const getTutoriasByProfesor = (id_profesor, callback) => {
   db.query(sql, [id_profesor], callback);
 };
 
+// Función para obtener las reservas de un alumno específico, incluyendo el nombre del profesor
 const getReservationsByStudent = (id_alumno, callback) => {
   const sql = `
     SELECT 
@@ -61,6 +64,7 @@ const getReservationsByStudent = (id_alumno, callback) => {
   db.query(sql, [id_alumno], callback);
 };
 
+// Función para obtener las tutorías reservadas de un profesor específico, incluyendo el nombre del alumno
 const getReservadasByProfesor = (id_profesor, callback) => {
   const sql = `
     SELECT 
@@ -82,6 +86,7 @@ const getReservadasByProfesor = (id_profesor, callback) => {
   db.query(sql, [id_profesor], callback);
 };
 
+// Función para obtener todas las tutorías disponibles, incluyendo el nombre del profesor
 const getAvailableTutorias = (callback) => {
   const sql = `
     SELECT 
@@ -101,6 +106,7 @@ const getAvailableTutorias = (callback) => {
   db.query(sql, callback);
 };
 
+// Función para crear una nueva disponibilidad de tutoría
 const createAvailability = (
   fecha_inicio,
   fecha_fin,
@@ -117,11 +123,13 @@ const createAvailability = (
   db.query(sql, [fecha_inicio, fecha_fin, ubicacion, id_profesor], callback);
 };
 
+// Función para obtener una tutoría por su ID, incluyendo el nombre del profesor y del alumno (si hay reserva)
 const getTutoriaById = (id, callback) => {
   const sql = "SELECT * FROM tutoria WHERE id_tutoria = ?";
   db.query(sql, [id], callback);
 };
 
+// Función para reservar una tutoría
 const reservarTutoria = (id, id_alumno, callback) => {
   const sql = `
     UPDATE tutoria 
@@ -133,6 +141,7 @@ const reservarTutoria = (id, id_alumno, callback) => {
   db.query(sql, [id_alumno, id], callback);
 };
 
+// Función para cancelar una reserva, dejando la tutoría disponible nuevamente
 const cancelReservation = (id, callback) => {
   const sql = `
     UPDATE tutoria
@@ -143,6 +152,7 @@ const cancelReservation = (id, callback) => {
   db.query(sql, [id], callback);
 };
 
+// Función para cancelar una disponibilidad, dejando la tutoría cancelada y sin alumno asignado
 const cancelAvailability = (id, callback) => {
   const sql = `
     UPDATE tutoria

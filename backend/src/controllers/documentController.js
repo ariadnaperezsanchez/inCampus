@@ -1,7 +1,6 @@
-// controllers/documentController.js
-
 const Document = require("../models/Document");
 
+// función para subir doc
 const uploadDocument = (req, res) => {
   const { titulo, tipo, id_asignatura } = req.body;
 
@@ -10,13 +9,13 @@ const uploadDocument = (req, res) => {
       message: "Faltan campos obligatorios",
     });
   }
-
+// validar que se ha subido un archivo
   if (!req.file) {
     return res.status(400).json({
       message: "No se ha subido ningún archivo",
     });
   }
-
+// crear objeto documento con los datos recibidos y la url del archivo subido
   const documento = {
     titulo,
     tipo,
@@ -44,6 +43,7 @@ const uploadDocument = (req, res) => {
   });
 };
 
+// función para obtener documentos de una asignatura, disponible para alumnos y profesores
 const getDocumentsBySubject = (req, res) => {
   const { id_asignatura } = req.params;
 
@@ -63,9 +63,10 @@ const getDocumentsBySubject = (req, res) => {
   });
 };
 
+// funcion para eliminar doc solo P
 const deleteDocument = (req, res) => {
   const { id } = req.params;
-
+// validar que el doc existe y que el P es el propietario del doc antes de eliminar
   Document.deleteDocument(id, (err, result) => {
     if (err) {
       console.error("Error al eliminar documento:", err);

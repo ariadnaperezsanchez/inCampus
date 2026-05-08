@@ -1,5 +1,6 @@
 const db = require("../config/db");
 
+// Función para obtener todos los usuarios de la base de datos
 const obtenerUsuarios = (callback) => {
   const sql = "SELECT * FROM usuario";
   db.query(sql, (err, results) => {
@@ -8,6 +9,7 @@ const obtenerUsuarios = (callback) => {
   });
 };
 
+// Función para obtener un usuario por su email
 const obtenerUsuarioPorEmail = (email, callback) => {
   const sql = "SELECT * FROM usuario WHERE email = ?";
   db.query(sql, [email], (err, results) => {
@@ -16,6 +18,7 @@ const obtenerUsuarioPorEmail = (email, callback) => {
   });
 };
 
+// Función para crear un nuevo usuario en la base de datos
 const crearUsuario = (
   nombre,
   apellido1,
