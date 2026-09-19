@@ -1,186 +1,254 @@
-# InCampus
+# inCampus
 
-Plataforma web académica para la gestión de tutorías, eventos y documentos entre alumnado y profesorado.
+inCampus is a full-stack web application designed to centralize and simplify the management of academic activities within a campus environment.
 
----
+The platform provides tools for managing users, subjects, events, documents, and tutoring sessions through a modern web interface connected to a backend API.
 
-# Tecnologías utilizadas
+This project was developed as part of my Web Application Development studies and demonstrates the integration of frontend and backend technologies in a complete web application.
 
-## Frontend
+## Features
+
+- User authentication
+- User management
+- Subject management
+- Academic event management
+- Document management
+- Tutoring session management
+- Protected routes
+- Backend authentication middleware
+- REST API communication
+- Responsive user interface
+- Dashboard for accessing the main application features
+- File upload functionality
+
+## Technologies
+
+### Frontend
+
 - React
-- React Router
 - Vite
 - JavaScript
-- CSS
+- HTML5
+- CSS3
 
-## Backend
+### Backend
+
 - Node.js
 - Express
-- JWT Authentication
-- Multer
-- bcrypt
+- REST API
+- Authentication middleware
 
-## Base de datos
-- MySQL
+### Development Tools
 
----
+- Git
+- GitHub
+- npm
+- Visual Studio Code
 
-# Funcionalidades principales
+## Project Structure
 
-## Alumnos
-- Iniciar sesión
-- Consultar eventos
-- Reservar tutorías
-- Cancelar reservas
-- Consultar documentos de asignaturas
-- Visualizar PDFs
-
-## Profesores
-- Crear eventos
-- Eliminar sus propios eventos
-- Crear disponibilidades de tutorías
-- Cancelar disponibilidades
-- Subir documentos PDF
-- Eliminar documentos
-
----
-
-# Sistema de autenticación
-
-La aplicación utiliza:
-- JWT para autenticación
-- Roles:
-  - `ALUMNO`
-  - `PROFESOR`
-
-Las rutas protegidas requieren token válido.
-
----
-
-# Estructura del proyecto
-
-```bash
-frontend/
-backend/
+```text
+inCampus/
+├── backend/
+│   ├── controllers/
+│   ├── middleware/
+│   ├── models/
+│   ├── routes/
+│   ├── uploads/
+│   └── ...
+│
+├── frontend/
+│   ├── public/
+│   ├── src/
+│   │   ├── assets/
+│   │   ├── components/
+│   │   └── ...
+│   └── ...
+│
+└── README.md
 ```
 
----
+The application is divided into two main parts:
 
-# Instalación
+- **Frontend** — React application responsible for the user interface.
+- **Backend** — Node.js application responsible for the API, application logic, authentication, and data management.
 
-## Clonar repositorio
+## Main Modules
+
+### Users
+
+The application includes functionality for managing users and controlling access to different parts of the platform.
+
+### Subjects
+
+Users can work with academic subjects and access information associated with them.
+
+### Events
+
+The platform includes functionality for managing academic events and activities.
+
+### Documents
+
+Documents can be uploaded and managed through the application.
+
+### Tutoring
+
+The application includes functionality related to tutoring sessions, allowing academic tutoring information to be managed from the platform.
+
+## Installation
+
+Clone the repository:
 
 ```bash
-git clone <URL_REPOSITORIO>
+git clone https://github.com/ariadnaperezsanchez/inCampus.git
+cd inCampus
 ```
 
----
+> If your GitHub repository has a different name, replace the repository URL above with the correct one.
 
-# Configuración backend
+## Backend Setup
 
-## Instalar dependencias
+Navigate to the backend directory:
 
 ```bash
 cd backend
+```
+
+Install the dependencies:
+
+```bash
 npm install
 ```
 
-## Crear archivo `.env`
+Configure the required environment variables if necessary.
 
-```env
-PORT=3000
+Then start the backend:
 
-DB_HOST=localhost
-DB_PORT=3306
-DB_USER=webuser
-DB_PASSWORD=web1234
-DB_NAME=gestion_academica
-
-JWT_SECRET=miclavesegura
-JWT_EXPIRES_IN=1h
-
-FRONTEND_URL=http://localhost:5173
+```bash
+npm start
 ```
 
-## Ejecutar backend
+If the project uses a development script instead:
 
 ```bash
 npm run dev
 ```
 
----
+## Frontend Setup
 
-# Configuración frontend
-
-## Instalar dependencias
+Open another terminal and navigate to the frontend directory:
 
 ```bash
 cd frontend
+```
+
+Install the dependencies:
+
+```bash
 npm install
 ```
 
-## Crear archivo `.env`
-
-```env
-VITE_API_URL=http://localhost:3000
-```
-
-## Ejecutar frontend
+Start the Vite development server:
 
 ```bash
 npm run dev
 ```
 
----
+Vite will display the local URL where the frontend application is available.
 
-# Despliegue en máquina virtual
+## Application Architecture
 
-Para producción:
-- Backend desplegado en VM Linux
-- Frontend conectado mediante `VITE_API_URL`
-- Base de datos MySQL externa
-- Configuración CORS habilitada
+The project follows a client-server architecture:
 
-Ejemplo:
-
-```env
-VITE_API_URL=http://34.57.35.197:3000
+```text
+React Frontend
+      │
+      │ HTTP / REST API
+      ▼
+Node.js / Express Backend
+      │
+      ▼
+Application Data
 ```
 
----
+The frontend handles the presentation layer and user interaction, while the backend processes requests, applies the application logic, manages authentication, and communicates with the application's data layer.
 
-# Subida de archivos
+## API Structure
 
-Los documentos PDF se almacenan en:
+The backend is organized using separate components for:
 
-```bash
-uploads/documentos
+```text
+Routes
+   ↓
+Controllers
+   ↓
+Models
 ```
 
-Solo se permiten archivos `.pdf`.
+Middleware is used for tasks such as authentication and request processing.
 
----
+This separation helps keep the backend organized and makes the application easier to maintain and extend.
 
-# Seguridad implementada
+## File Uploads
 
-- Contraseñas encriptadas con bcrypt
-- Autenticación JWT
-- Middleware de protección de rutas
-- Restricción de permisos por rol
-- Los profesores solo pueden eliminar sus propios eventos
+The application includes document upload functionality.
 
----
+Uploaded files are handled by the backend and stored in the configured upload directory.
 
-# Autores
+For a production environment, uploaded user files should normally be excluded from Git version control and handled through an appropriate storage system.
 
-Proyecto desarrollado por:
+## Environment Variables
 
-- Nombre integrante 1
-- Nombre integrante 2
-- Nombre integrante 3
+Sensitive configuration should not be stored directly in the repository.
 
----
+If environment variables are required, create a local `.env` file and keep it excluded from Git:
 
-# Estado del proyecto
+```text
+.env
+```
 
-Proyecto funcional en desarrollo académico.
+An `.env.example` file can be included in the repository to document the required configuration without exposing credentials.
+
+## Learning Objectives
+
+This project demonstrates practical experience with:
+
+- Full-stack web development
+- React applications
+- Node.js backend development
+- Express APIs
+- REST architecture
+- Frontend and backend integration
+- Authentication and authorization
+- Route protection
+- Application architecture
+- File uploads
+- Component-based frontend development
+- Backend controllers and models
+- npm dependency management
+- Git and GitHub
+
+## Future Improvements
+
+Possible future improvements include:
+
+- Improved form validation
+- Extended error handling
+- Automated testing
+- Improved responsive design
+- Additional user roles and permissions
+- Improved document storage
+- API documentation
+- Deployment of the frontend and backend
+
+## Purpose
+
+inCampus was developed as an academic full-stack project to apply concepts learned during my Web Application Development studies.
+
+The project focuses on building a structured web application with a modern frontend, a backend API, authentication, and multiple academic management features.
+
+## Author
+
+**Ariadna Pérez Sánchez**
+
+GitHub: `ariadnaperezsanchez`
